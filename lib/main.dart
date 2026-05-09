@@ -1,8 +1,26 @@
 import 'package:adminpanellostandfound/ui/screens/splash_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 
-void main() {
+void main()  async {
+
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+      // apiKey: "AIzaSyA3GtNFepz9IqbTnK8bAcklXpqs_zeSKYY",
+      // authDomain: "lost-and-found-634f2.firebaseapp.com",
+      // projectId: "lost-and-found-634f2",
+      // storageBucket: "lost-and-found-634f2.firebasestorage.app",
+      // messagingSenderId: "790518871168",
+      // appId: "1:790518871168:web:7057ef1f9b4474d0fde265",
+      // measurementId: "G-52FEQLV7W9"
+  );
+
   runApp(const MyApp());
+
 }
 
 class MyApp extends StatelessWidget {
@@ -12,6 +30,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(
         // This is the theme of your application.
@@ -61,7 +80,7 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
       ),
       body: Center(
-
+        child: Text("Firebase Connected"),
       ),
     );
   }
