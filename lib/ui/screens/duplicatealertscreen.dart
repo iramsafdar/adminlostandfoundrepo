@@ -2192,6 +2192,1675 @@
 //     );
 //   }
 // }
+// import 'package:cloud_firestore/cloud_firestore.dart';
+// import 'package:flutter/material.dart';
+//
+// class DuplicateAlertsScreen extends StatelessWidget {
+//   const DuplicateAlertsScreen({super.key});
+//
+//   static const Color darkBlue = Color(0xFF2A417F);
+//   static const Color orange = Color(0xFFF09E27);
+//   static const Color bgColor = Color(0xFFEFF5FB);
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     final alertsRef =
+//     FirebaseFirestore.instance.collection("duplicate_alerts");
+//
+//     return Container(
+//       color: bgColor,
+//
+//       child: Padding(
+//         padding: const EdgeInsets.all(25),
+//
+//         child: Container(
+//           width: double.infinity,
+//           padding: const EdgeInsets.all(20),
+//
+//           decoration: BoxDecoration(
+//             color: Colors.white,
+//
+//             borderRadius: BorderRadius.circular(18),
+//
+//             boxShadow: [
+//               BoxShadow(
+//                 color: Colors.black.withOpacity(0.05),
+//                 blurRadius: 10,
+//                 offset: const Offset(0, 4),
+//               ),
+//             ],
+//           ),
+//
+//           child: StreamBuilder<QuerySnapshot>(
+//             stream: alertsRef
+//                 .where("status", isEqualTo: "pending")
+//                 .orderBy("createdAt", descending: true)
+//                 .snapshots(),
+//
+//             builder: (context, snapshot) {
+//               if (snapshot.hasError) {
+//                 return Center(
+//                   child: Text("Error: ${snapshot.error}"),
+//                 );
+//               }
+//
+//               if (snapshot.connectionState ==
+//                   ConnectionState.waiting) {
+//                 return const Center(
+//                   child: CircularProgressIndicator(),
+//                 );
+//               }
+//
+//               final docs = snapshot.data?.docs ?? [];
+//
+//               if (docs.isEmpty) {
+//                 return const Center(
+//                   child: Text(
+//                     "No duplicate alerts found",
+//                     style: TextStyle(fontSize: 16),
+//                   ),
+//                 );
+//               }
+//
+//               return Column(
+//                 crossAxisAlignment:
+//                 CrossAxisAlignment.start,
+//
+//                 children: [
+//
+//                   // 🔷 HEADER
+//                   Row(
+//                     mainAxisAlignment:
+//                     MainAxisAlignment.spaceBetween,
+//
+//                     children: [
+//                       const Text(
+//                         "Potential Duplicate Items",
+//                         style: TextStyle(
+//                           fontSize: 22,
+//                           fontWeight: FontWeight.bold,
+//                         ),
+//                       ),
+//
+//                       Container(
+//                         padding:
+//                         const EdgeInsets.symmetric(
+//                           horizontal: 16,
+//                           vertical: 10,
+//                         ),
+//
+//                         decoration: BoxDecoration(
+//                           color: Colors.red
+//                               .withOpacity(0.1),
+//
+//                           borderRadius:
+//                           BorderRadius.circular(12),
+//                         ),
+//
+//                         child: Text(
+//                           "${docs.length} Pending",
+//                           style: const TextStyle(
+//                             color: Colors.red,
+//                             fontWeight: FontWeight.bold,
+//                           ),
+//                         ),
+//                       ),
+//                     ],
+//                   ),
+//
+//                   const SizedBox(height: 25),
+//
+//                   // 🔷 TABLE
+//                   Expanded(
+//                     child: SingleChildScrollView(
+//                       scrollDirection:
+//                       Axis.horizontal,
+//
+//                       child: DataTable(
+//
+//                         columnSpacing: 50,
+//
+//                         headingRowHeight: 60,
+//                         dataRowMinHeight: 90,
+//                         dataRowMaxHeight: 100,
+//
+//                         headingRowColor:
+//                         MaterialStateProperty.all(
+//                           bgColor,
+//                         ),
+//
+//                         border: TableBorder(
+//                           horizontalInside: BorderSide(
+//                             color: Colors.grey
+//                                 .withOpacity(0.2),
+//                           ),
+//                         ),
+//
+//                         columns: const [
+//
+//                           // ITEM
+//                           DataColumn(
+//                             label: Text(
+//                               "Item Name",
+//                               style: TextStyle(
+//                                 fontWeight:
+//                                 FontWeight.bold,
+//                               ),
+//                             ),
+//                           ),
+//
+//                           // SIMILARITY
+//                           DataColumn(
+//                             label: Text(
+//                               "Similarity",
+//                               style: TextStyle(
+//                                 fontWeight:
+//                                 FontWeight.bold,
+//                               ),
+//                             ),
+//                           ),
+//
+//                           // DETECTED ON
+//                           DataColumn(
+//                             label: Text(
+//                               "Detected On",
+//                               style: TextStyle(
+//                                 fontWeight:
+//                                 FontWeight.bold,
+//                               ),
+//                             ),
+//                           ),
+//
+//                           // ACTIONS
+//                           DataColumn(
+//                             label: Text(
+//                               "Actions",
+//                               style: TextStyle(
+//                                 fontWeight:
+//                                 FontWeight.bold,
+//                               ),
+//                             ),
+//                           ),
+//                         ],
+//
+//                         rows: docs.map((doc) {
+//                           final data =
+//                           doc.data()
+//                           as Map<String, dynamic>;
+//
+//                           final similarity =
+//                           ((data["similarity"] ??
+//                               0.0) *
+//                               100)
+//                               .toStringAsFixed(0);
+//
+//                           final timestamp =
+//                           data["createdAt"]
+//                           as Timestamp?;
+//
+//                           final date =
+//                           timestamp != null
+//                               ? "${timestamp.toDate().day}/${timestamp.toDate().month}/${timestamp.toDate().year}"
+//                               : "N/A";
+//
+//                           return DataRow(
+//                             cells: [
+//
+//                               // 🔷 ITEM
+//                               DataCell(
+//                                 SizedBox(
+//                                   width: 300,
+//
+//                                   child: Row(
+//                                     children: [
+//
+//                                       Container(
+//                                         width: 45,
+//                                         height: 45,
+//
+//                                         decoration:
+//                                         BoxDecoration(
+//                                           borderRadius:
+//                                           BorderRadius.circular(
+//                                               10),
+//
+//                                           image: data[
+//                                           'duplicateImageUrl'] !=
+//                                               null
+//                                               ? DecorationImage(
+//                                             image:
+//                                             NetworkImage(
+//                                               data[
+//                                               'duplicateImageUrl'],
+//                                             ),
+//                                             fit:
+//                                             BoxFit.cover,
+//                                           )
+//                                               : null,
+//
+//                                           color:
+//                                           Colors.black12,
+//                                         ),
+//
+//                                         child: data[
+//                                         'duplicateImageUrl'] ==
+//                                             null
+//                                             ? const Icon(
+//                                           Icons
+//                                               .inventory_2,
+//                                         )
+//                                             : null,
+//                                       ),
+//
+//                                       const SizedBox(
+//                                           width: 14),
+//
+//                                       Expanded(
+//                                         child: Column(
+//                                           mainAxisAlignment:
+//                                           MainAxisAlignment
+//                                               .center,
+//
+//                                           crossAxisAlignment:
+//                                           CrossAxisAlignment
+//                                               .start,
+//
+//                                           children: [
+//                                             Text(
+//                                               data["itemName"] ??
+//                                                   "Unknown Item",
+//
+//                                               overflow:
+//                                               TextOverflow
+//                                                   .ellipsis,
+//
+//                                               style:
+//                                               const TextStyle(
+//                                                 fontWeight:
+//                                                 FontWeight
+//                                                     .bold,
+//
+//                                                 fontSize:
+//                                                 15,
+//                                               ),
+//                                             ),
+//                                           ],
+//                                         ),
+//                                       ),
+//                                     ],
+//                                   ),
+//                                 ),
+//                               ),
+//
+//                               // 🔷 SIMILARITY
+//                               DataCell(
+//                                 Container(
+//                                   padding:
+//                                   const EdgeInsets
+//                                       .symmetric(
+//                                     horizontal: 16,
+//                                     vertical: 8,
+//                                   ),
+//
+//                                   decoration:
+//                                   BoxDecoration(
+//                                     color: Colors.red
+//                                         .withOpacity(
+//                                         0.12),
+//
+//                                     borderRadius:
+//                                     BorderRadius
+//                                         .circular(
+//                                         20),
+//                                   ),
+//
+//                                   child: Text(
+//                                     "$similarity%",
+//
+//                                     style:
+//                                     const TextStyle(
+//                                       color: Colors.red,
+//                                       fontWeight:
+//                                       FontWeight
+//                                           .bold,
+//                                     ),
+//                                   ),
+//                                 ),
+//                               ),
+//
+//                               // 🔷 DATE
+//                               DataCell(
+//                                 Text(
+//                                   date,
+//                                   style: const TextStyle(
+//                                     fontWeight:
+//                                     FontWeight.w500,
+//                                   ),
+//                                 ),
+//                               ),
+//
+//                               // 🔷 ACTION
+//                               DataCell(
+//                                 Container(
+//                                   decoration:
+//                                   BoxDecoration(
+//                                     borderRadius:
+//                                     BorderRadius
+//                                         .circular(
+//                                         12),
+//                                   ),
+//
+//                                   child: IconButton(
+//                                     tooltip:
+//                                     "View Details",
+//
+//                                     icon: const Icon(
+//                                       Icons.visibility,
+//                                       color: Colors.blue,
+//                                     ),
+//
+//                                     onPressed: () {
+//                                       _openDetails(
+//                                         context,
+//                                         doc.id,
+//                                         data,
+//                                       );
+//                                     },
+//                                   ),
+//                                 ),
+//                               ),
+//                             ],
+//                           );
+//                         }).toList(),
+//                       ),
+//                     ),
+//                   ),
+//                 ],
+//               );
+//             },
+//           ),
+//         ),
+//       ),
+//     );
+//   }
+//
+//   void _openDetails(
+//       BuildContext context,
+//       String alertId,
+//       Map<String, dynamic> data,
+//       ) {
+//     showModalBottomSheet(
+//       context: context,
+//       isScrollControlled: true,
+//       backgroundColor: Colors.transparent,
+//
+//       builder: (_) {
+//         return DraggableScrollableSheet(
+//           initialChildSize: 0.92,
+//           minChildSize: 0.6,
+//           maxChildSize: 0.95,
+//
+//           builder: (context, scrollController) {
+//             return Container(
+//               decoration: const BoxDecoration(
+//                 color: bgColor,
+//
+//                 borderRadius: BorderRadius.vertical(
+//                   top: Radius.circular(24),
+//                 ),
+//               ),
+//
+//               child: FutureBuilder<
+//                   List<DocumentSnapshot>>(
+//                 future: Future.wait([
+//
+//                   FirebaseFirestore.instance
+//                       .collection("items")
+//                       .doc(data["itemId"])
+//                       .get(),
+//
+//                   FirebaseFirestore.instance
+//                       .collection("items")
+//                       .doc(data["duplicateItemId"])
+//                       .get(),
+//                 ]),
+//
+//                 builder: (context, snapshot) {
+//
+//                   if (!snapshot.hasData) {
+//                     return const Center(
+//                       child:
+//                       CircularProgressIndicator(),
+//                     );
+//                   }
+//
+//                   final docs = snapshot.data!;
+//
+//                   final original =
+//                       docs[0].data()
+//                       as Map<String, dynamic>? ??
+//                           {};
+//
+//                   final duplicate =
+//                       docs[1].data()
+//                       as Map<String, dynamic>? ??
+//                           {};
+//
+//                   return Column(
+//                     children: [
+//
+//                       // 🔷 HEADER
+//                       Container(
+//                         padding:
+//                         const EdgeInsets.all(20),
+//
+//                         decoration: const BoxDecoration(
+//                           color: Colors.white,
+//
+//                           borderRadius:
+//                           BorderRadius.vertical(
+//                             top: Radius.circular(24),
+//                           ),
+//                         ),
+//
+//                         child: Row(
+//                           mainAxisAlignment:
+//                           MainAxisAlignment
+//                               .spaceBetween,
+//
+//                           children: [
+//
+//                             const Text(
+//                               "Duplicate Review",
+//                               style: TextStyle(
+//                                 fontSize: 20,
+//                                 fontWeight:
+//                                 FontWeight.bold,
+//                               ),
+//                             ),
+//
+//                             IconButton(
+//                               icon:
+//                               const Icon(Icons.close),
+//
+//                               onPressed: () =>
+//                                   Navigator.pop(
+//                                       context),
+//                             ),
+//                           ],
+//                         ),
+//                       ),
+//
+//                       // 🔷 CONTENT
+//                       Expanded(
+//                         child: SingleChildScrollView(
+//                           controller: scrollController,
+//
+//                           padding:
+//                           const EdgeInsets.all(20),
+//
+//                           child: Column(
+//                             children: [
+//
+//                               Row(
+//                                 crossAxisAlignment:
+//                                 CrossAxisAlignment
+//                                     .start,
+//
+//                                 children: [
+//
+//                                   Expanded(
+//                                     child: _itemCard(
+//                                       "Original Item",
+//                                       original,
+//                                       Colors.green,
+//                                     ),
+//                                   ),
+//
+//                                   const SizedBox(
+//                                       width: 20),
+//
+//                                   Expanded(
+//                                     child: _itemCard(
+//                                       "Duplicate Item",
+//                                       duplicate,
+//                                       Colors.blue,
+//                                     ),
+//                                   ),
+//                                 ],
+//                               ),
+//
+//                               const SizedBox(height: 30),
+//
+//                               Row(
+//                                 mainAxisAlignment:
+//                                 MainAxisAlignment
+//                                     .end,
+//
+//                                 children: [
+//
+//                                   ElevatedButton.icon(
+//                                     onPressed: () async {
+//
+//                                       await FirebaseFirestore
+//                                           .instance
+//                                           .collection(
+//                                           "duplicate_alerts")
+//                                           .doc(alertId)
+//                                           .update({
+//                                         "status":
+//                                         "confirmed"
+//                                       });
+//
+//                                       Navigator.pop(
+//                                           context);
+//                                     },
+//
+//                                     icon: const Icon(
+//                                         Icons.check),
+//
+//                                     label: const Text(
+//                                         "Confirm"),
+//
+//                                     style:
+//                                     ElevatedButton
+//                                         .styleFrom(
+//                                       backgroundColor:
+//                                       Colors.green,
+//
+//                                       padding:
+//                                       const EdgeInsets
+//                                           .symmetric(
+//                                         horizontal: 22,
+//                                         vertical: 16,
+//                                       ),
+//
+//                                       shape:
+//                                       RoundedRectangleBorder(
+//                                         borderRadius:
+//                                         BorderRadius
+//                                             .circular(
+//                                             12),
+//                                       ),
+//                                     ),
+//                                   ),
+//
+//                                   const SizedBox(
+//                                       width: 12),
+//
+//                                   ElevatedButton.icon(
+//                                     onPressed: () async {
+//
+//                                       await FirebaseFirestore
+//                                           .instance
+//                                           .collection(
+//                                           "duplicate_alerts")
+//                                           .doc(alertId)
+//                                           .delete();
+//
+//                                       Navigator.pop(
+//                                           context);
+//                                     },
+//
+//                                     icon: const Icon(
+//                                         Icons.close),
+//
+//                                     label:
+//                                     const Text("Ignore"),
+//
+//                                     style:
+//                                     ElevatedButton
+//                                         .styleFrom(
+//                                       backgroundColor:
+//                                       Colors.grey,
+//
+//                                       padding:
+//                                       const EdgeInsets
+//                                           .symmetric(
+//                                         horizontal: 22,
+//                                         vertical: 16,
+//                                       ),
+//
+//                                       shape:
+//                                       RoundedRectangleBorder(
+//                                         borderRadius:
+//                                         BorderRadius
+//                                             .circular(
+//                                             12),
+//                                       ),
+//                                     ),
+//                                   ),
+//                                 ],
+//                               ),
+//                             ],
+//                           ),
+//                         ),
+//                       ),
+//                     ],
+//                   );
+//                 },
+//               ),
+//             );
+//           },
+//         );
+//       },
+//     );
+//   }
+//
+//   Widget _itemCard(
+//       String title,
+//       Map<String, dynamic> item,
+//       Color color,
+//       ) {
+//     return Container(
+//       padding: const EdgeInsets.all(18),
+//
+//       decoration: BoxDecoration(
+//         color: Colors.white,
+//
+//         borderRadius: BorderRadius.circular(18),
+//
+//         boxShadow: [
+//           BoxShadow(
+//             color: Colors.black.withOpacity(0.05),
+//             blurRadius: 8,
+//           ),
+//         ],
+//       ),
+//
+//       child: Column(
+//         crossAxisAlignment:
+//         CrossAxisAlignment.start,
+//
+//         children: [
+//
+//           // 🔷 TITLE
+//           Container(
+//             padding:
+//             const EdgeInsets.symmetric(
+//               horizontal: 14,
+//               vertical: 10,
+//             ),
+//
+//             decoration: BoxDecoration(
+//               color: color.withOpacity(0.1),
+//
+//               borderRadius:
+//               BorderRadius.circular(12),
+//             ),
+//
+//             child: Row(
+//               children: [
+//
+//                 Icon(
+//                   Icons.verified,
+//                   color: color,
+//                   size: 20,
+//                 ),
+//
+//                 const SizedBox(width: 10),
+//
+//                 Text(
+//                   title,
+//
+//                   style: TextStyle(
+//                     color: color,
+//                     fontWeight: FontWeight.bold,
+//                     fontSize: 16,
+//                   ),
+//                 ),
+//               ],
+//             ),
+//           ),
+//
+//           const SizedBox(height: 18),
+//
+//           // 🔷 IMAGE
+//           if (item["imageUrl"] != null)
+//             ClipRRect(
+//               borderRadius:
+//               BorderRadius.circular(14),
+//
+//               child: Image.network(
+//                 item["imageUrl"],
+//
+//                 height: 220,
+//                 width: double.infinity,
+//
+//                 fit: BoxFit.cover,
+//               ),
+//             ),
+//
+//           const SizedBox(height: 18),
+//
+//           Text(
+//             item["itemName"] ?? "N/A",
+//
+//             style: const TextStyle(
+//               fontSize: 20,
+//               fontWeight: FontWeight.bold,
+//             ),
+//           ),
+//
+//           const SizedBox(height: 10),
+//
+//           Text(
+//             item["description"] ??
+//                 "No description",
+//
+//             style: TextStyle(
+//               color: Colors.grey[700],
+//               height: 1.5,
+//             ),
+//           ),
+//
+//           const SizedBox(height: 14),
+//
+//           Row(
+//             children: [
+//
+//               const Icon(
+//                 Icons.location_on,
+//                 size: 18,
+//                 color: Colors.grey,
+//               ),
+//
+//               const SizedBox(width: 6),
+//
+//               Expanded(
+//                 child: Text(
+//                   item["location"] ?? "N/A",
+//
+//                   style: TextStyle(
+//                     color: Colors.grey[700],
+//                   ),
+//                 ),
+//               ),
+//             ],
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+// }
+
+//
+// import 'package:cloud_firestore/cloud_firestore.dart';
+// import 'package:flutter/material.dart';
+//
+// class DuplicateAlertsScreen extends StatelessWidget {
+//   const DuplicateAlertsScreen({super.key});
+//
+//   static const Color darkBlue = Color(0xFF2A417F);
+//   static const Color orange = Color(0xFFF09E27);
+//   static const Color bgColor = Color(0xFFEFF5FB);
+//
+//   @override
+//   Widget build(BuildContext context) {
+//
+//     final alertsRef =
+//     FirebaseFirestore.instance
+//         .collection("duplicate_alerts");
+//
+//     return Container(
+//       color: bgColor,
+//
+//       child: Padding(
+//         padding: const EdgeInsets.all(25),
+//
+//         child: Container(
+//           width: double.infinity,
+//           padding: const EdgeInsets.all(20),
+//
+//           decoration: BoxDecoration(
+//             color: Colors.white,
+//
+//             borderRadius:
+//             BorderRadius.circular(18),
+//
+//             boxShadow: [
+//               BoxShadow(
+//                 color:
+//                 Colors.black.withOpacity(0.05),
+//
+//                 blurRadius: 10,
+//
+//                 offset: const Offset(0, 4),
+//               ),
+//             ],
+//           ),
+//
+//           child: StreamBuilder<QuerySnapshot>(
+//
+//             stream: alertsRef
+//                 .where(
+//               "status",
+//               isEqualTo: "pending",
+//             )
+//                 .orderBy(
+//               "createdAt",
+//               descending: true,
+//             )
+//                 .snapshots(),
+//
+//             builder: (context, snapshot) {
+//
+//               // 🔷 ERROR
+//               if (snapshot.hasError) {
+//
+//                 return Center(
+//                   child: Text(
+//                     "Error: ${snapshot.error}",
+//                   ),
+//                 );
+//               }
+//
+//               // 🔷 LOADING
+//               if (snapshot.connectionState ==
+//                   ConnectionState.waiting) {
+//
+//                 return const Center(
+//                   child:
+//                   CircularProgressIndicator(),
+//                 );
+//               }
+//
+//               final docs =
+//                   snapshot.data?.docs ?? [];
+//
+//               // 🔷 EMPTY
+//               if (docs.isEmpty) {
+//
+//                 return const Center(
+//                   child: Padding(
+//                     padding: EdgeInsets.all(40),
+//
+//                     child: Text(
+//                       "No duplicate alerts found",
+//
+//                       style: TextStyle(
+//                         fontSize: 16,
+//                       ),
+//                     ),
+//                   ),
+//                 );
+//               }
+//
+//               return Column(
+//                 crossAxisAlignment:
+//                 CrossAxisAlignment.start,
+//
+//                 children: [
+//
+//                   // 🔷 HEADER
+//                   Row(
+//                     mainAxisAlignment:
+//                     MainAxisAlignment
+//                         .spaceBetween,
+//
+//                     children: [
+//
+//                       const Text(
+//                         "Potential Duplicate Items",
+//
+//                         style: TextStyle(
+//                           fontSize: 22,
+//                           fontWeight:
+//                           FontWeight.bold,
+//                         ),
+//                       ),
+//
+//                       Container(
+//                         padding:
+//                         const EdgeInsets
+//                             .symmetric(
+//                           horizontal: 16,
+//                           vertical: 10,
+//                         ),
+//
+//                         decoration: BoxDecoration(
+//                           color: Colors.red
+//                               .withOpacity(0.1),
+//
+//                           borderRadius:
+//                           BorderRadius
+//                               .circular(12),
+//                         ),
+//
+//                         child: Text(
+//                           "${docs.length} Pending",
+//
+//                           style:
+//                           const TextStyle(
+//                             color: Colors.red,
+//                             fontWeight:
+//                             FontWeight.bold,
+//                           ),
+//                         ),
+//                       ),
+//                     ],
+//                   ),
+//
+//                   const SizedBox(height: 25),
+//
+//                   // ✅ FIXED TABLE
+//                   SizedBox(
+//                     height: 500,
+//
+//                     child:
+//                     SingleChildScrollView(
+//                       scrollDirection:
+//                       Axis.horizontal,
+//
+//                       child: DataTable(
+//
+//                         columnSpacing: 50,
+//
+//                         headingRowHeight: 60,
+//
+//                         dataRowMinHeight: 90,
+//
+//                         dataRowMaxHeight: 100,
+//
+//                         headingRowColor:
+//                         MaterialStateProperty
+//                             .all(bgColor),
+//
+//                         border: TableBorder(
+//                           horizontalInside:
+//                           BorderSide(
+//                             color: Colors.grey
+//                                 .withOpacity(
+//                                 0.2),
+//                           ),
+//                         ),
+//
+//                         columns: const [
+//
+//                           // 🔷 ITEM
+//                           DataColumn(
+//                             label: Text(
+//                               "Item Name",
+//
+//                               style: TextStyle(
+//                                 fontWeight:
+//                                 FontWeight
+//                                     .bold,
+//                               ),
+//                             ),
+//                           ),
+//
+//                           // 🔷 SIMILARITY
+//                           DataColumn(
+//                             label: Text(
+//                               "Similarity",
+//
+//                               style: TextStyle(
+//                                 fontWeight:
+//                                 FontWeight
+//                                     .bold,
+//                               ),
+//                             ),
+//                           ),
+//
+//                           // 🔷 DATE
+//                           DataColumn(
+//                             label: Text(
+//                               "Detected On",
+//
+//                               style: TextStyle(
+//                                 fontWeight:
+//                                 FontWeight
+//                                     .bold,
+//                               ),
+//                             ),
+//                           ),
+//
+//                           // 🔷 ACTIONS
+//                           DataColumn(
+//                             label: Text(
+//                               "Actions",
+//
+//                               style: TextStyle(
+//                                 fontWeight:
+//                                 FontWeight
+//                                     .bold,
+//                               ),
+//                             ),
+//                           ),
+//                         ],
+//
+//                         rows:
+//                         docs.map((doc) {
+//
+//                           final data =
+//                           doc.data()
+//                           as Map<String,
+//                               dynamic>;
+//
+//                           final similarity =
+//                           ((data[
+//                           "similarity"] ??
+//                               0.0) *
+//                               100)
+//                               .toStringAsFixed(
+//                               0);
+//
+//                           final timestamp =
+//                           data["createdAt"]
+//                           as Timestamp?;
+//
+//                           final date =
+//                           timestamp != null
+//                               ? "${timestamp.toDate().day}/${timestamp.toDate().month}/${timestamp.toDate().year}"
+//                               : "N/A";
+//
+//                           return DataRow(
+//                             cells: [
+//
+//                               // 🔷 ITEM CELL
+//                               DataCell(
+//                                 SizedBox(
+//                                   width: 320,
+//
+//                                   child: Row(
+//                                     children: [
+//
+//                                       // IMAGE
+//                                       Container(
+//                                         width: 50,
+//                                         height: 50,
+//
+//                                         decoration:
+//                                         BoxDecoration(
+//                                           borderRadius:
+//                                           BorderRadius
+//                                               .circular(
+//                                               10),
+//
+//                                           image: data[
+//                                           "duplicateImageUrl"] !=
+//                                               null
+//                                               ? DecorationImage(
+//                                             image:
+//                                             NetworkImage(
+//                                               data[
+//                                               "duplicateImageUrl"],
+//                                             ),
+//
+//                                             fit: BoxFit
+//                                                 .cover,
+//                                           )
+//                                               : null,
+//
+//                                           color: Colors
+//                                               .black12,
+//                                         ),
+//
+//                                         child: data[
+//                                         "duplicateImageUrl"] ==
+//                                             null
+//                                             ? const Icon(
+//                                           Icons
+//                                               .inventory_2,
+//                                         )
+//                                             : null,
+//                                       ),
+//
+//                                       const SizedBox(
+//                                           width:
+//                                           14),
+//
+//                                       // NAME
+//                                       Expanded(
+//                                         child: Text(
+//                                           data["itemName"] ??
+//                                               "Unknown Item",
+//
+//                                           overflow:
+//                                           TextOverflow
+//                                               .ellipsis,
+//
+//                                           style:
+//                                           const TextStyle(
+//                                             fontWeight:
+//                                             FontWeight
+//                                                 .bold,
+//
+//                                             fontSize:
+//                                             15,
+//                                           ),
+//                                         ),
+//                                       ),
+//                                     ],
+//                                   ),
+//                                 ),
+//                               ),
+//
+//                               // 🔷 SIMILARITY
+//                               DataCell(
+//                                 Container(
+//                                   padding:
+//                                   const EdgeInsets
+//                                       .symmetric(
+//                                     horizontal:
+//                                     16,
+//                                     vertical: 8,
+//                                   ),
+//
+//                                   decoration:
+//                                   BoxDecoration(
+//                                     color: Colors
+//                                         .red
+//                                         .withOpacity(
+//                                         0.12),
+//
+//                                     borderRadius:
+//                                     BorderRadius
+//                                         .circular(
+//                                         20),
+//                                   ),
+//
+//                                   child: Text(
+//                                     "$similarity%",
+//
+//                                     style:
+//                                     const TextStyle(
+//                                       color:
+//                                       Colors.red,
+//
+//                                       fontWeight:
+//                                       FontWeight
+//                                           .bold,
+//                                     ),
+//                                   ),
+//                                 ),
+//                               ),
+//
+//                               // 🔷 DATE
+//                               DataCell(
+//                                 Text(
+//                                   date,
+//
+//                                   style:
+//                                   const TextStyle(
+//                                     fontWeight:
+//                                     FontWeight
+//                                         .w500,
+//                                   ),
+//                                 ),
+//                               ),
+//
+//                               // 🔷 ACTIONS
+//                               DataCell(
+//
+//                                 IconButton(
+//                                   tooltip:
+//                                   "View Details",
+//
+//                                   icon:
+//                                   const Icon(
+//                                     Icons
+//                                         .visibility,
+//
+//                                     color:
+//                                     Colors.blue,
+//                                   ),
+//
+//                                   onPressed: () {
+//
+//                                     _openDetails(
+//                                       context,
+//                                       doc.id,
+//                                       data,
+//                                     );
+//                                   },
+//                                 ),
+//                               ),
+//                             ],
+//                           );
+//                         }).toList(),
+//                       ),
+//                     ),
+//                   ),
+//                 ],
+//               );
+//             },
+//           ),
+//         ),
+//       ),
+//     );
+//   }
+//
+//   // 🔷 OPEN DETAILS
+//   void _openDetails(
+//       BuildContext context,
+//       String alertId,
+//       Map<String, dynamic> data,
+//       ) {
+//
+//     showModalBottomSheet(
+//
+//       context: context,
+//
+//       isScrollControlled: true,
+//
+//       backgroundColor: Colors.transparent,
+//
+//       builder: (_) {
+//
+//         return DraggableScrollableSheet(
+//
+//           initialChildSize: 0.92,
+//
+//           minChildSize: 0.6,
+//
+//           maxChildSize: 0.95,
+//
+//           builder: (context, scrollController) {
+//
+//             return Container(
+//
+//               decoration: const BoxDecoration(
+//                 color: bgColor,
+//
+//                 borderRadius: BorderRadius.vertical(
+//                   top: Radius.circular(24),
+//                 ),
+//               ),
+//
+//               child: FutureBuilder<
+//                   List<DocumentSnapshot>>(
+//
+//                 future: Future.wait([
+//
+//                   FirebaseFirestore.instance
+//                       .collection("items")
+//                       .doc(data["itemId"])
+//                       .get(),
+//
+//                   FirebaseFirestore.instance
+//                       .collection("items")
+//                       .doc(data["duplicateItemId"])
+//                       .get(),
+//                 ]),
+//
+//                 builder: (context, snapshot) {
+//
+//                   // 🔷 LOADING
+//                   if (snapshot.connectionState ==
+//                       ConnectionState.waiting) {
+//
+//                     return const Center(
+//                       child:
+//                       CircularProgressIndicator(),
+//                     );
+//                   }
+//
+//                   // 🔷 ERROR
+//                   if (snapshot.hasError) {
+//
+//                     return Center(
+//                       child: Text(
+//                         "Error: ${snapshot.error}",
+//                       ),
+//                     );
+//                   }
+//
+//                   if (!snapshot.hasData) {
+//
+//                     return const Center(
+//                       child: Text(
+//                         "No data found",
+//                       ),
+//                     );
+//                   }
+//
+//                   final docs = snapshot.data!;
+//
+//                   final original =
+//                       docs[0].data()
+//                       as Map<String, dynamic>? ??
+//                           {};
+//
+//                   final duplicate =
+//                       docs[1].data()
+//                       as Map<String, dynamic>? ??
+//                           {};
+//
+//                   return Column(
+//                     children: [
+//
+//                       // 🔷 HEADER
+//                       Container(
+//                         padding:
+//                         const EdgeInsets.all(20),
+//
+//                         decoration:
+//                         const BoxDecoration(
+//                           color: Colors.white,
+//
+//                           borderRadius:
+//                           BorderRadius.vertical(
+//                             top:
+//                             Radius.circular(24),
+//                           ),
+//                         ),
+//
+//                         child: Row(
+//                           mainAxisAlignment:
+//                           MainAxisAlignment
+//                               .spaceBetween,
+//
+//                           children: [
+//
+//                             const Text(
+//                               "Duplicate Review",
+//
+//                               style: TextStyle(
+//                                 fontSize: 20,
+//                                 fontWeight:
+//                                 FontWeight.bold,
+//                               ),
+//                             ),
+//
+//                             IconButton(
+//                               icon:
+//                               const Icon(Icons.close),
+//
+//                               onPressed: () {
+//                                 Navigator.pop(context);
+//                               },
+//                             ),
+//                           ],
+//                         ),
+//                       ),
+//
+//                       // 🔷 CONTENT
+//                       Expanded(
+//                         child: SingleChildScrollView(
+//                           controller: scrollController,
+//
+//                           padding:
+//                           const EdgeInsets.all(20),
+//
+//                           child: Column(
+//                             children: [
+//
+//                               Row(
+//                                 crossAxisAlignment:
+//                                 CrossAxisAlignment
+//                                     .start,
+//
+//                                 children: [
+//
+//                                   // 🔷 ORIGINAL ITEM
+//                                   Expanded(
+//                                     child: _itemCard(
+//                                       "Original Item",
+//                                       original,
+//                                       Colors.green,
+//                                     ),
+//                                   ),
+//
+//                                   const SizedBox(
+//                                       width: 20),
+//
+//                                   // 🔷 DUPLICATE ITEM
+//                                   Expanded(
+//                                     child: _itemCard(
+//                                       "Duplicate Item",
+//                                       duplicate,
+//                                       Colors.blue,
+//                                     ),
+//                                   ),
+//                                 ],
+//                               ),
+//
+//                               const SizedBox(
+//                                   height: 30),
+//
+//                               // 🔷 ACTION BUTTONS
+//                               Row(
+//                                 mainAxisAlignment:
+//                                 MainAxisAlignment.end,
+//
+//                                 children: [
+//
+//                                   // ✅ CONFIRM
+//                                   ElevatedButton.icon(
+//
+//                                     onPressed: () async {
+//
+//                                       await FirebaseFirestore
+//                                           .instance
+//                                           .collection(
+//                                           "duplicate_alerts")
+//                                           .doc(alertId)
+//                                           .update({
+//                                         "status":
+//                                         "confirmed",
+//                                       });
+//
+//                                       Navigator.pop(
+//                                           context);
+//                                     },
+//
+//                                     icon: const Icon(
+//                                         Icons.check),
+//
+//                                     label:
+//                                     const Text("Confirm"),
+//
+//                                     style:
+//                                     ElevatedButton
+//                                         .styleFrom(
+//
+//                                       backgroundColor:
+//                                       Colors.green,
+//
+//                                       foregroundColor:
+//                                       Colors.white,
+//
+//                                       padding:
+//                                       const EdgeInsets
+//                                           .symmetric(
+//                                         horizontal: 22,
+//                                         vertical: 16,
+//                                       ),
+//
+//                                       shape:
+//                                       RoundedRectangleBorder(
+//                                         borderRadius:
+//                                         BorderRadius
+//                                             .circular(
+//                                             12),
+//                                       ),
+//                                     ),
+//                                   ),
+//
+//                                   const SizedBox(
+//                                       width: 12),
+//
+//                                   // ❌ IGNORE
+//                                   ElevatedButton.icon(
+//
+//                                     onPressed: () async {
+//
+//                                       await FirebaseFirestore
+//                                           .instance
+//                                           .collection(
+//                                           "duplicate_alerts")
+//                                           .doc(alertId)
+//                                           .delete();
+//
+//                                       Navigator.pop(
+//                                           context);
+//                                     },
+//
+//                                     icon: const Icon(
+//                                         Icons.close),
+//
+//                                     label:
+//                                     const Text("Ignore"),
+//
+//                                     style:
+//                                     ElevatedButton
+//                                         .styleFrom(
+//
+//                                       backgroundColor:
+//                                       Colors.grey,
+//
+//                                       foregroundColor:
+//                                       Colors.white,
+//
+//                                       padding:
+//                                       const EdgeInsets
+//                                           .symmetric(
+//                                         horizontal: 22,
+//                                         vertical: 16,
+//                                       ),
+//
+//                                       shape:
+//                                       RoundedRectangleBorder(
+//                                         borderRadius:
+//                                         BorderRadius
+//                                             .circular(
+//                                             12),
+//                                       ),
+//                                     ),
+//                                   ),
+//                                 ],
+//                               ),
+//                             ],
+//                           ),
+//                         ),
+//                       ),
+//                     ],
+//                   );
+//                 },
+//               ),
+//             );
+//           },
+//         );
+//       },
+//     );
+//   }
+//   // void _openDetails(
+//   //     BuildContext context,
+//   //     String alertId,
+//   //     Map<String, dynamic> data,
+//   //     ) {
+//   //
+//   //   showModalBottomSheet(
+//   //
+//   //     context: context,
+//   //
+//   //     isScrollControlled: true,
+//   //
+//   //     backgroundColor:
+//   //     Colors.transparent,
+//   //
+//   //     builder: (_) {
+//   //
+//   //       return DraggableScrollableSheet(
+//   //
+//   //         initialChildSize: 0.92,
+//   //
+//   //         minChildSize: 0.6,
+//   //
+//   //         maxChildSize: 0.95,
+//   //
+//   //         builder:
+//   //             (context, scrollController) {
+//   //
+//   //           return Container(
+//   //
+//   //             decoration:
+//   //             const BoxDecoration(
+//   //               color: bgColor,
+//   //
+//   //               borderRadius:
+//   //               BorderRadius.vertical(
+//   //                 top:
+//   //                 Radius.circular(24),
+//   //               ),
+//   //             ),
+//   //
+//   //             child: FutureBuilder<
+//   //                 List<DocumentSnapshot>>(
+//   //               future: Future.wait([
+//   //
+//   //                 FirebaseFirestore
+//   //                     .instance
+//   //                     .collection("items")
+//   //                     .doc(data["itemId"])
+//   //                     .get(),
+//   //
+//   //                 FirebaseFirestore
+//   //                     .instance
+//   //                     .collection("items")
+//   //                     .doc(data[
+//   //                 "duplicateItemId"])
+//   //                     .get(),
+//   //               ]),
+//   //
+//   //               builder:
+//   //                   (context, snapshot) {
+//   //
+//   //                 if (!snapshot.hasData) {
+//   //
+//   //                   return const Center(
+//   //                     child:
+//   //                     CircularProgressIndicator(),
+//   //                   );
+//   //                 }
+//   //
+//   //                 final docs =
+//   //                 snapshot.data!;
+//   //
+//   //                 final original =
+//   //                     docs[0].data()
+//   //                     as Map<String,
+//   //                         dynamic>? ??
+//   //                         {};
+//   //
+//   //                 final duplicate =
+//   //                     docs[1].data()
+//   //                     as Map<String,
+//   //                         dynamic>? ??
+//   //                         {};
+//   //
+//   //                 return Center(
+//   //                   child: Padding(
+//   //                     padding:
+//   //                     const EdgeInsets
+//   //                         .all(20),
+//   //
+//   //                     child: Text(
+//   //                       "Details Loaded Successfully",
+//   //
+//   //                       style:
+//   //                       const TextStyle(
+//   //                         fontSize: 22,
+//   //                         fontWeight:
+//   //                         FontWeight.bold,
+//   //                       ),
+//   //                     ),
+//   //                   ),
+//   //                 );
+//   //               },
+//   //             ),
+//   //           );
+//   //         },
+//   //       );
+//   //     },
+//   //
+//   //   );
+//   // }
+// }
+
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
@@ -2204,8 +3873,10 @@ class DuplicateAlertsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     final alertsRef =
-    FirebaseFirestore.instance.collection("duplicate_alerts");
+    FirebaseFirestore.instance
+        .collection("duplicate_alerts");
 
     return Container(
       color: bgColor,
@@ -2220,44 +3891,73 @@ class DuplicateAlertsScreen extends StatelessWidget {
           decoration: BoxDecoration(
             color: Colors.white,
 
-            borderRadius: BorderRadius.circular(18),
+            borderRadius:
+            BorderRadius.circular(18),
 
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.05),
+                color:
+                Colors.black.withOpacity(0.05),
+
                 blurRadius: 10,
+
                 offset: const Offset(0, 4),
               ),
             ],
           ),
 
           child: StreamBuilder<QuerySnapshot>(
+
             stream: alertsRef
-                .where("status", isEqualTo: "pending")
-                .orderBy("createdAt", descending: true)
+                .where(
+              "status",
+              isEqualTo: "pending",
+            )
+                .orderBy(
+              "createdAt",
+              descending: true,
+            )
                 .snapshots(),
 
             builder: (context, snapshot) {
+
+              // 🔷 ERROR
               if (snapshot.hasError) {
+
                 return Center(
-                  child: Text("Error: ${snapshot.error}"),
+                  child: Text(
+                    "Error: ${snapshot.error}",
+                  ),
                 );
               }
 
+              // 🔷 LOADING
               if (snapshot.connectionState ==
                   ConnectionState.waiting) {
+
                 return const Center(
-                  child: CircularProgressIndicator(),
+                  child:
+                  CircularProgressIndicator(),
                 );
               }
 
-              final docs = snapshot.data?.docs ?? [];
+              final docs =
+                  snapshot.data?.docs ?? [];
 
+              // 🔷 EMPTY
               if (docs.isEmpty) {
+
                 return const Center(
-                  child: Text(
-                    "No duplicate alerts found",
-                    style: TextStyle(fontSize: 16),
+                  child: Padding(
+                    padding: EdgeInsets.all(40),
+
+                    child: Text(
+                      "No duplicate alerts found",
+
+                      style: TextStyle(
+                        fontSize: 16,
+                      ),
+                    ),
                   ),
                 );
               }
@@ -2271,20 +3971,25 @@ class DuplicateAlertsScreen extends StatelessWidget {
                   // 🔷 HEADER
                   Row(
                     mainAxisAlignment:
-                    MainAxisAlignment.spaceBetween,
+                    MainAxisAlignment
+                        .spaceBetween,
 
                     children: [
+
                       const Text(
                         "Potential Duplicate Items",
+
                         style: TextStyle(
                           fontSize: 22,
-                          fontWeight: FontWeight.bold,
+                          fontWeight:
+                          FontWeight.bold,
                         ),
                       ),
 
                       Container(
                         padding:
-                        const EdgeInsets.symmetric(
+                        const EdgeInsets
+                            .symmetric(
                           horizontal: 16,
                           vertical: 10,
                         ),
@@ -2294,14 +3999,18 @@ class DuplicateAlertsScreen extends StatelessWidget {
                               .withOpacity(0.1),
 
                           borderRadius:
-                          BorderRadius.circular(12),
+                          BorderRadius
+                              .circular(12),
                         ),
 
                         child: Text(
                           "${docs.length} Pending",
-                          style: const TextStyle(
+
+                          style:
+                          const TextStyle(
                             color: Colors.red,
-                            fontWeight: FontWeight.bold,
+                            fontWeight:
+                            FontWeight.bold,
                           ),
                         ),
                       ),
@@ -2310,9 +4019,12 @@ class DuplicateAlertsScreen extends StatelessWidget {
 
                   const SizedBox(height: 25),
 
-                  // 🔷 TABLE
-                  Expanded(
-                    child: SingleChildScrollView(
+                  // ✅ FIXED TABLE
+                  SizedBox(
+                    height: 500,
+
+                    child:
+                    SingleChildScrollView(
                       scrollDirection:
                       Axis.horizontal,
 
@@ -2321,78 +4033,94 @@ class DuplicateAlertsScreen extends StatelessWidget {
                         columnSpacing: 50,
 
                         headingRowHeight: 60,
+
                         dataRowMinHeight: 90,
+
                         dataRowMaxHeight: 100,
 
                         headingRowColor:
-                        MaterialStateProperty.all(
-                          bgColor,
-                        ),
+                        MaterialStateProperty
+                            .all(bgColor),
 
                         border: TableBorder(
-                          horizontalInside: BorderSide(
+                          horizontalInside:
+                          BorderSide(
                             color: Colors.grey
-                                .withOpacity(0.2),
+                                .withOpacity(
+                                0.2),
                           ),
                         ),
 
                         columns: const [
 
-                          // ITEM
+                          // 🔷 ITEM
                           DataColumn(
                             label: Text(
                               "Item Name",
+
                               style: TextStyle(
                                 fontWeight:
-                                FontWeight.bold,
+                                FontWeight
+                                    .bold,
                               ),
                             ),
                           ),
 
-                          // SIMILARITY
+                          // 🔷 SIMILARITY
                           DataColumn(
                             label: Text(
                               "Similarity",
+
                               style: TextStyle(
                                 fontWeight:
-                                FontWeight.bold,
+                                FontWeight
+                                    .bold,
                               ),
                             ),
                           ),
 
-                          // DETECTED ON
+                          // 🔷 DATE
                           DataColumn(
                             label: Text(
                               "Detected On",
+
                               style: TextStyle(
                                 fontWeight:
-                                FontWeight.bold,
+                                FontWeight
+                                    .bold,
                               ),
                             ),
                           ),
 
-                          // ACTIONS
+                          // 🔷 ACTIONS
                           DataColumn(
                             label: Text(
                               "Actions",
+
                               style: TextStyle(
                                 fontWeight:
-                                FontWeight.bold,
+                                FontWeight
+                                    .bold,
                               ),
                             ),
                           ),
                         ],
 
-                        rows: docs.map((doc) {
+                        rows:
+                        docs.map((doc) {
+
                           final data =
                           doc.data()
-                          as Map<String, dynamic>;
+                          as Map<String,
+                              dynamic>;
 
                           final similarity =
-                          ((data["similarity"] ??
+                          ((data[
+                          "similarity"] ??
                               0.0) *
                               100)
-                              .toStringAsFixed(0);
+                              .toStringAsFixed(
+                              0);
 
                           final timestamp =
                           data["createdAt"]
@@ -2406,44 +4134,47 @@ class DuplicateAlertsScreen extends StatelessWidget {
                           return DataRow(
                             cells: [
 
-                              // 🔷 ITEM
+                              // 🔷 ITEM CELL
                               DataCell(
                                 SizedBox(
-                                  width: 300,
+                                  width: 320,
 
                                   child: Row(
                                     children: [
 
+                                      // IMAGE
                                       Container(
-                                        width: 45,
-                                        height: 45,
+                                        width: 50,
+                                        height: 50,
 
                                         decoration:
                                         BoxDecoration(
                                           borderRadius:
-                                          BorderRadius.circular(
+                                          BorderRadius
+                                              .circular(
                                               10),
 
                                           image: data[
-                                          'duplicateImageUrl'] !=
+                                          "duplicateImageUrl"] !=
                                               null
                                               ? DecorationImage(
                                             image:
                                             NetworkImage(
                                               data[
-                                              'duplicateImageUrl'],
+                                              "duplicateImageUrl"],
                                             ),
-                                            fit:
-                                            BoxFit.cover,
+
+                                            fit: BoxFit
+                                                .cover,
                                           )
                                               : null,
 
-                                          color:
-                                          Colors.black12,
+                                          color: Colors
+                                              .black12,
                                         ),
 
                                         child: data[
-                                        'duplicateImageUrl'] ==
+                                        "duplicateImageUrl"] ==
                                             null
                                             ? const Icon(
                                           Icons
@@ -2453,38 +4184,28 @@ class DuplicateAlertsScreen extends StatelessWidget {
                                       ),
 
                                       const SizedBox(
-                                          width: 14),
+                                          width:
+                                          14),
 
+                                      // NAME
                                       Expanded(
-                                        child: Column(
-                                          mainAxisAlignment:
-                                          MainAxisAlignment
-                                              .center,
+                                        child: Text(
+                                          data["itemName"] ??
+                                              "Unknown Item",
 
-                                          crossAxisAlignment:
-                                          CrossAxisAlignment
-                                              .start,
+                                          overflow:
+                                          TextOverflow
+                                              .ellipsis,
 
-                                          children: [
-                                            Text(
-                                              data["itemName"] ??
-                                                  "Unknown Item",
+                                          style:
+                                          const TextStyle(
+                                            fontWeight:
+                                            FontWeight
+                                                .bold,
 
-                                              overflow:
-                                              TextOverflow
-                                                  .ellipsis,
-
-                                              style:
-                                              const TextStyle(
-                                                fontWeight:
-                                                FontWeight
-                                                    .bold,
-
-                                                fontSize:
-                                                15,
-                                              ),
-                                            ),
-                                          ],
+                                            fontSize:
+                                            15,
+                                          ),
                                         ),
                                       ),
                                     ],
@@ -2498,13 +4219,15 @@ class DuplicateAlertsScreen extends StatelessWidget {
                                   padding:
                                   const EdgeInsets
                                       .symmetric(
-                                    horizontal: 16,
+                                    horizontal:
+                                    16,
                                     vertical: 8,
                                   ),
 
                                   decoration:
                                   BoxDecoration(
-                                    color: Colors.red
+                                    color: Colors
+                                        .red
                                         .withOpacity(
                                         0.12),
 
@@ -2519,7 +4242,9 @@ class DuplicateAlertsScreen extends StatelessWidget {
 
                                     style:
                                     const TextStyle(
-                                      color: Colors.red,
+                                      color:
+                                      Colors.red,
+
                                       fontWeight:
                                       FontWeight
                                           .bold,
@@ -2532,41 +4257,40 @@ class DuplicateAlertsScreen extends StatelessWidget {
                               DataCell(
                                 Text(
                                   date,
-                                  style: const TextStyle(
+
+                                  style:
+                                  const TextStyle(
                                     fontWeight:
-                                    FontWeight.w500,
+                                    FontWeight
+                                        .w500,
                                   ),
                                 ),
                               ),
 
-                              // 🔷 ACTION
+                              // 🔷 ACTIONS
                               DataCell(
-                                Container(
-                                  decoration:
-                                  BoxDecoration(
-                                    borderRadius:
-                                    BorderRadius
-                                        .circular(
-                                        12),
+
+                                IconButton(
+                                  tooltip:
+                                  "View Details",
+
+                                  icon:
+                                  const Icon(
+                                    Icons
+                                        .visibility,
+
+                                    color:
+                                    Colors.blue,
                                   ),
 
-                                  child: IconButton(
-                                    tooltip:
-                                    "View Details",
+                                  onPressed: () {
 
-                                    icon: const Icon(
-                                      Icons.visibility,
-                                      color: Colors.blue,
-                                    ),
-
-                                    onPressed: () {
-                                      _openDetails(
-                                        context,
-                                        doc.id,
-                                        data,
-                                      );
-                                    },
-                                  ),
+                                    _openDetails(
+                                      context,
+                                      doc.id,
+                                      data,
+                                    );
+                                  },
                                 ),
                               ),
                             ],
@@ -2584,24 +4308,35 @@ class DuplicateAlertsScreen extends StatelessWidget {
     );
   }
 
+  // 🔷 OPEN DETAILS
   void _openDetails(
       BuildContext context,
       String alertId,
       Map<String, dynamic> data,
       ) {
+
     showModalBottomSheet(
+
       context: context,
+
       isScrollControlled: true,
+
       backgroundColor: Colors.transparent,
 
       builder: (_) {
+
         return DraggableScrollableSheet(
+
           initialChildSize: 0.92,
+
           minChildSize: 0.6,
+
           maxChildSize: 0.95,
 
           builder: (context, scrollController) {
+
             return Container(
+
               decoration: const BoxDecoration(
                 color: bgColor,
 
@@ -2612,6 +4347,7 @@ class DuplicateAlertsScreen extends StatelessWidget {
 
               child: FutureBuilder<
                   List<DocumentSnapshot>>(
+
                 future: Future.wait([
 
                   FirebaseFirestore.instance
@@ -2627,10 +4363,32 @@ class DuplicateAlertsScreen extends StatelessWidget {
 
                 builder: (context, snapshot) {
 
-                  if (!snapshot.hasData) {
+                  // 🔷 LOADING
+                  if (snapshot.connectionState ==
+                      ConnectionState.waiting) {
+
                     return const Center(
                       child:
                       CircularProgressIndicator(),
+                    );
+                  }
+
+                  // 🔷 ERROR
+                  if (snapshot.hasError) {
+
+                    return Center(
+                      child: Text(
+                        "Error: ${snapshot.error}",
+                      ),
+                    );
+                  }
+
+                  if (!snapshot.hasData) {
+
+                    return const Center(
+                      child: Text(
+                        "No data found",
+                      ),
                     );
                   }
 
@@ -2654,12 +4412,14 @@ class DuplicateAlertsScreen extends StatelessWidget {
                         padding:
                         const EdgeInsets.all(20),
 
-                        decoration: const BoxDecoration(
+                        decoration:
+                        const BoxDecoration(
                           color: Colors.white,
 
                           borderRadius:
                           BorderRadius.vertical(
-                            top: Radius.circular(24),
+                            top:
+                            Radius.circular(24),
                           ),
                         ),
 
@@ -2672,6 +4432,7 @@ class DuplicateAlertsScreen extends StatelessWidget {
 
                             const Text(
                               "Duplicate Review",
+
                               style: TextStyle(
                                 fontSize: 20,
                                 fontWeight:
@@ -2683,9 +4444,9 @@ class DuplicateAlertsScreen extends StatelessWidget {
                               icon:
                               const Icon(Icons.close),
 
-                              onPressed: () =>
-                                  Navigator.pop(
-                                      context),
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
                             ),
                           ],
                         ),
@@ -2709,6 +4470,7 @@ class DuplicateAlertsScreen extends StatelessWidget {
 
                                 children: [
 
+                                  // 🔷 ORIGINAL ITEM
                                   Expanded(
                                     child: _itemCard(
                                       "Original Item",
@@ -2720,6 +4482,7 @@ class DuplicateAlertsScreen extends StatelessWidget {
                                   const SizedBox(
                                       width: 20),
 
+                                  // 🔷 DUPLICATE ITEM
                                   Expanded(
                                     child: _itemCard(
                                       "Duplicate Item",
@@ -2730,16 +4493,19 @@ class DuplicateAlertsScreen extends StatelessWidget {
                                 ],
                               ),
 
-                              const SizedBox(height: 30),
+                              const SizedBox(
+                                  height: 30),
 
+                              // 🔷 ACTION BUTTONS
                               Row(
                                 mainAxisAlignment:
-                                MainAxisAlignment
-                                    .end,
+                                MainAxisAlignment.end,
 
                                 children: [
 
+                                  // ✅ CONFIRM
                                   ElevatedButton.icon(
+
                                     onPressed: () async {
 
                                       await FirebaseFirestore
@@ -2749,7 +4515,7 @@ class DuplicateAlertsScreen extends StatelessWidget {
                                           .doc(alertId)
                                           .update({
                                         "status":
-                                        "confirmed"
+                                        "confirmed",
                                       });
 
                                       Navigator.pop(
@@ -2759,14 +4525,18 @@ class DuplicateAlertsScreen extends StatelessWidget {
                                     icon: const Icon(
                                         Icons.check),
 
-                                    label: const Text(
-                                        "Confirm"),
+                                    label:
+                                    const Text("Confirm"),
 
                                     style:
                                     ElevatedButton
                                         .styleFrom(
+
                                       backgroundColor:
                                       Colors.green,
+
+                                      foregroundColor:
+                                      Colors.white,
 
                                       padding:
                                       const EdgeInsets
@@ -2788,7 +4558,9 @@ class DuplicateAlertsScreen extends StatelessWidget {
                                   const SizedBox(
                                       width: 12),
 
+                                  // ❌ IGNORE
                                   ElevatedButton.icon(
+
                                     onPressed: () async {
 
                                       await FirebaseFirestore
@@ -2811,8 +4583,12 @@ class DuplicateAlertsScreen extends StatelessWidget {
                                     style:
                                     ElevatedButton
                                         .styleFrom(
+
                                       backgroundColor:
                                       Colors.grey,
+
+                                      foregroundColor:
+                                      Colors.white,
 
                                       padding:
                                       const EdgeInsets
@@ -2847,22 +4623,27 @@ class DuplicateAlertsScreen extends StatelessWidget {
     );
   }
 
+  // 🔷 ITEM CARD
   Widget _itemCard(
       String title,
       Map<String, dynamic> item,
       Color color,
       ) {
+
     return Container(
       padding: const EdgeInsets.all(18),
 
       decoration: BoxDecoration(
         color: Colors.white,
 
-        borderRadius: BorderRadius.circular(18),
+        borderRadius:
+        BorderRadius.circular(18),
 
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color:
+            Colors.black.withOpacity(0.05),
+
             blurRadius: 8,
           ),
         ],
@@ -2905,7 +4686,8 @@ class DuplicateAlertsScreen extends StatelessWidget {
 
                   style: TextStyle(
                     color: color,
-                    fontWeight: FontWeight.bold,
+                    fontWeight:
+                    FontWeight.bold,
                     fontSize: 16,
                   ),
                 ),
@@ -2933,17 +4715,20 @@ class DuplicateAlertsScreen extends StatelessWidget {
 
           const SizedBox(height: 18),
 
+          // 🔷 NAME
           Text(
             item["itemName"] ?? "N/A",
 
             style: const TextStyle(
               fontSize: 20,
-              fontWeight: FontWeight.bold,
+              fontWeight:
+              FontWeight.bold,
             ),
           ),
 
           const SizedBox(height: 10),
 
+          // 🔷 DESCRIPTION
           Text(
             item["description"] ??
                 "No description",
@@ -2956,6 +4741,7 @@ class DuplicateAlertsScreen extends StatelessWidget {
 
           const SizedBox(height: 14),
 
+          // 🔷 LOCATION
           Row(
             children: [
 
