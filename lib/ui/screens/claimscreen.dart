@@ -780,14 +780,14 @@ class _ClaimsScreenState extends State<ClaimsScreen> {
 
         children: [
 
-          // 🔷 HEADER
-          const Text(
-            "Claims Monitoring",
-            style: TextStyle(
-              fontSize: 28,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
+          // // 🔷 HEADER
+          // const Text(
+          //   "Claims Monitoring",
+          //   style: TextStyle(
+          //     fontSize: 28,
+          //     fontWeight: FontWeight.bold,
+          //   ),
+          // ),
 
           const SizedBox(height: 25),
 

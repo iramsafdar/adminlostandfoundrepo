@@ -461,14 +461,14 @@ class _BroadcastScreenState
 
               children: [
 
-                const Text(
-                  "Broadcast Notification",
-
-                  style: TextStyle(
-                    fontSize: 28,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
+                // const Text(
+                //   "Broadcast Notification",
+                //
+                //   style: TextStyle(
+                //     fontSize: 28,
+                //     fontWeight: FontWeight.bold,
+                //   ),
+                // ),
 
                 const SizedBox(height: 30),
 

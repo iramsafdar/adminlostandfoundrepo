@@ -4232,490 +4232,203 @@ class _ItemsScreenState extends State<ItemsScreen> {
 
   // ✅ NEW
   String selectedView = "items";
+  Widget _dropdown(
+      String selectedValue,
+      List<String> items,
+      ValueChanged<String?> onChanged,
+      ) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 14),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 6,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: DropdownButton<String>(
+        value: selectedValue,
+        underline: const SizedBox(),
+        borderRadius: BorderRadius.circular(12),
 
+        items: items
+            .map(
+              (e) => DropdownMenuItem(
+            value: e,
+            child: Text(e),
+          ),
+        )
+            .toList(),
+
+        onChanged: onChanged,
+      ),
+    );
+  }
+
+  Widget _topTab(String title, String value) {
+    final isActive = selectedView == value;
+
+    return GestureDetector(
+      onTap: () => setState(() => selectedView = value),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+        decoration: BoxDecoration(
+          color: isActive ? ItemsScreen.darkBlue : Colors.transparent,
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Text(
+          title,
+          style: TextStyle(
+            color: isActive ? Colors.white : Colors.black,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ),
+    );
+  }
+  Widget _searchBox() {
+    return SizedBox(
+      width: 300,
+      child: TextField(
+        controller: searchController,
+        decoration: InputDecoration(
+          hintText: "Search items...",
+          prefixIcon: const Icon(Icons.search),
+          filled: true,
+          fillColor: Colors.white,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide.none,
+          ),
+        ),
+        onChanged: (value) {
+          setState(() {
+            searchQuery = value.toLowerCase();
+          });
+        },
+      ),
+    );
+  }
   @override
   Widget build(BuildContext context) {
-
     return LayoutBuilder(
-
       builder: (context, constraints) {
-
         return SingleChildScrollView(
           padding: const EdgeInsets.all(25),
-
           child: ConstrainedBox(
-
-            constraints: BoxConstraints(
-              minWidth: constraints.maxWidth,
-            ),
-
+            constraints: BoxConstraints(minWidth: constraints.maxWidth),
             child: Column(
-              crossAxisAlignment:
-              CrossAxisAlignment.start,
-
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
 
-                // 🔷 HEADER
-                Wrap(
-                  spacing: 15,
-                  runSpacing: 15,
-
-                  children: [
-
-                    const Text(
-                      "Manage Items",
-                      style: TextStyle(
-                        fontSize: 28,
-                        fontWeight: FontWeight.bold,
+                // ================= TOP NAV BAR =================
+                Container(
+                  padding: const EdgeInsets.all(14),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(14),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.05),
+                        blurRadius: 10,
+                        offset: const Offset(0, 4),
                       ),
-                    ),
-
-                    ElevatedButton.icon(
-                      onPressed: () {},
-
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor:
-                        ItemsScreen.orange,
-
-                        padding:
-                        const EdgeInsets.symmetric(
-                          horizontal: 18,
-                          vertical: 14,
-                        ),
-
-                        shape: RoundedRectangleBorder(
-                          borderRadius:
-                          BorderRadius.circular(12),
-                        ),
-                      ),
-
-                      icon: const Icon(
-                        Icons.add,
-                        color: Colors.white,
-                      ),
-
-                      label: const Text(
-                        "Add Item",
-                        style:
-                        TextStyle(color: Colors.white),
-                      ),
-                    ),
-                  ],
-                ),
-
-                const SizedBox(height: 25),
-
-                // 🔍 FILTERS
-                SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-
+                    ],
+                  ),
                   child: Row(
                     children: [
 
-                      // 🔍 SEARCH
-                      SizedBox(
-                        width: 300,
+                      // 🔘 SEGMENTED TABS
+                      Container(
+                        decoration: BoxDecoration(
+                          color: Colors.grey.shade100,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        padding: const EdgeInsets.all(4),
+                        child: Row(
+                          children: [
 
-                        child: TextField(
-                          controller: searchController,
+                            _topTab("All Items", "items"),
+                            const SizedBox(width: 6),
+                            _topTab("Duplicate Alerts", "duplicates"),
+                          ],
+                        ),
+                      ),
 
-                          decoration: InputDecoration(
-                            hintText: "Search items...",
+                      const Spacer(),
 
-                            prefixIcon:
-                            const Icon(Icons.search),
-
-                            filled: true,
-                            fillColor: Colors.white,
-
-                            border: OutlineInputBorder(
-                              borderRadius:
-                              BorderRadius.circular(12),
-
-                              borderSide: BorderSide.none,
-                            ),
+                      // ➕ ADD ITEM (RIGHT SIDE FIXED)
+                      ElevatedButton.icon(
+                        onPressed: () {},
+                        icon: const Icon(Icons.add, color: Colors.white),
+                        label: const Text("Add Item",
+                            style: TextStyle(color: Colors.white)),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: ItemsScreen.orange,
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 18, vertical: 14),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
                           ),
-
-                          onChanged: (value) {
-
-                            setState(() {
-                              searchQuery =
-                                  value.toLowerCase();
-                            });
-                          },
-                        ),
-                      ),
-
-                      const SizedBox(width: 20),
-
-                      // 🔷 TYPE FILTER
-                      Container(
-                        padding:
-                        const EdgeInsets.symmetric(
-                            horizontal: 14),
-
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius:
-                          BorderRadius.circular(12),
-
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black
-                                  .withOpacity(0.05),
-
-                              blurRadius: 6,
-
-                              offset:
-                              const Offset(0, 2),
-                            ),
-                          ],
-                        ),
-
-                        child: DropdownButton<String>(
-                          underline: const SizedBox(),
-
-                          value: selectedType,
-
-                          items: const [
-
-                            DropdownMenuItem(
-                              value: "All Items",
-                              child: Text("All Items"),
-                            ),
-
-                            DropdownMenuItem(
-                              value: "lost",
-                              child: Text("Lost"),
-                            ),
-
-                            DropdownMenuItem(
-                              value: "found",
-                              child: Text("Found"),
-                            ),
-                          ],
-
-                          onChanged: (value) {
-
-                            setState(() {
-                              selectedType = value!;
-                            });
-                          },
-                        ),
-                      ),
-
-                      const SizedBox(width: 20),
-
-                      // 🔷 CATEGORY FILTER
-                      Container(
-                        padding:
-                        const EdgeInsets.symmetric(
-                            horizontal: 14),
-
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius:
-                          BorderRadius.circular(12),
-
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black
-                                  .withOpacity(0.05),
-
-                              blurRadius: 6,
-
-                              offset:
-                              const Offset(0, 2),
-                            ),
-                          ],
-                        ),
-
-                        child: DropdownButton<String>(
-                          underline: const SizedBox(),
-
-                          value: selectedCategory,
-
-                          items: const [
-
-                            DropdownMenuItem(
-                              value: "All Categories",
-                              child:
-                              Text("All Categories"),
-                            ),
-
-                            DropdownMenuItem(
-                              value: "Student ID Card",
-                              child:
-                              Text("Student ID Card"),
-                            ),
-
-                            DropdownMenuItem(
-                              value: "Keys",
-                              child: Text("Keys"),
-                            ),
-
-                            DropdownMenuItem(
-                              value: "Electronics",
-                              child:
-                              Text("Electronics"),
-                            ),
-
-                            DropdownMenuItem(
-                              value: "Clothing",
-                              child: Text("Clothing"),
-                            ),
-
-                            DropdownMenuItem(
-                              value: "Documents",
-                              child:
-                              Text("Documents"),
-                            ),
-
-                            DropdownMenuItem(
-                              value: "Others",
-                              child: Text("Others"),
-                            ),
-                          ],
-
-                          onChanged: (value) {
-
-                            setState(() {
-                              selectedCategory =
-                              value!;
-                            });
-                          },
-                        ),
-                      ),
-
-                      const SizedBox(width: 20),
-
-                      // 🔷 STATUS FILTER
-                      Container(
-                        padding:
-                        const EdgeInsets.symmetric(
-                            horizontal: 14),
-
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius:
-                          BorderRadius.circular(12),
-
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black
-                                  .withOpacity(0.05),
-
-                              blurRadius: 6,
-
-                              offset:
-                              const Offset(0, 2),
-                            ),
-                          ],
-                        ),
-
-                        child: DropdownButton<String>(
-                          underline: const SizedBox(),
-
-                          value: selectedStatus,
-
-                          items: const [
-
-                            DropdownMenuItem(
-                              value: "All Status",
-                              child:
-                              Text("All Status"),
-                            ),
-
-                            DropdownMenuItem(
-                              value: "lost",
-                              child: Text("Lost"),
-                            ),
-
-                            DropdownMenuItem(
-                              value: "found",
-                              child: Text("Found"),
-                            ),
-
-                            DropdownMenuItem(
-                              value: "claim pending",
-                              child:
-                              Text("Claim Pending"),
-                            ),
-
-                            DropdownMenuItem(
-                              value: "claim approved",
-                              child:
-                              Text("Claim Approved"),
-                            ),
-
-                            DropdownMenuItem(
-                              value: "claim rejected",
-                              child:
-                              Text("Claim Rejected"),
-                            ),
-
-                            DropdownMenuItem(
-                              value: "returned",
-                              child: Text("Returned"),
-                            ),
-                          ],
-
-                          onChanged: (value) {
-
-                            setState(() {
-                              selectedStatus =
-                              value!;
-                            });
-                          },
                         ),
                       ),
                     ],
                   ),
                 ),
 
-                const SizedBox(height: 25),
+                const SizedBox(height: 20),
 
-                // ✅ NEW SECTION
-                Row(
-                  children: [
+                // ================= FILTERS (ONLY ITEMS VIEW) =================
+                if (selectedView == "items") ...[
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      children: [
 
-                    // 🔷 ALL ITEMS
-                    ElevatedButton(
-                      onPressed: () {
+                        _searchBox(),
+                        const SizedBox(width: 15),
 
-                        setState(() {
-                          selectedView = "items";
-                        });
-                      },
+                        _dropdown(selectedType, [
+                          "All Items",
+                          "lost",
+                          "found"
+                        ], (v) => setState(() => selectedType = v!)),
 
-                      style: ElevatedButton.styleFrom(
+                        const SizedBox(width: 15),
 
-                        backgroundColor:
-                        selectedView == "items"
-                            ? ItemsScreen.darkBlue
-                            : Colors.white,
+                        _dropdown(selectedCategory, [
+                          "All Categories",
+                          "Student ID Card",
+                          "Keys",
+                          "Electronics",
+                          "Clothing",
+                          "Documents",
+                          "Others"
+                        ], (v) => setState(() => selectedCategory = v!)),
 
-                        foregroundColor:
-                        selectedView == "items"
-                            ? Colors.white
-                            : Colors.black,
+                        const SizedBox(width: 15),
 
-                        padding:
-                        const EdgeInsets.symmetric(
-                          horizontal: 20,
-                          vertical: 16,
-                        ),
-
-                        shape: RoundedRectangleBorder(
-                          borderRadius:
-                          BorderRadius.circular(12),
-                        ),
-                      ),
-
-                      child: const Text(
-                        "All Items",
-                      ),
+                        _dropdown(selectedStatus, [
+                          "All Status",
+                          "lost",
+                          "found",
+                          "claim pending",
+                          "claim approved",
+                          "claim rejected",
+                          "returned"
+                        ], (v) => setState(() => selectedStatus = v!)),
+                      ],
                     ),
+                  ),
 
-                    const SizedBox(width: 15),
+                  const SizedBox(height: 25),
+                ],
 
-                    // 🔷 DUPLICATE ALERTS
-                    StreamBuilder<QuerySnapshot>(
-
-                      stream: FirebaseFirestore.instance
-                          .collection(
-                          "duplicate_alerts")
-                          .where(
-                        "status",
-                        isEqualTo: "pending",
-                      )
-                          .snapshots(),
-
-                      builder: (context, snapshot) {
-
-                        final count =
-                            snapshot.data?.docs.length ??
-                                0;
-
-                        return ElevatedButton.icon(
-
-                          onPressed: () {
-
-                            setState(() {
-                              selectedView =
-                              "duplicates";
-                            });
-                          },
-
-                          icon: Stack(
-                            children: [
-
-                              const Icon(
-                                Icons
-                                    .warning_amber_rounded,
-                              ),
-
-                              if (count > 0)
-                                Positioned(
-                                  right: 0,
-                                  top: 0,
-
-                                  child: Container(
-                                    width: 10,
-                                    height: 10,
-
-                                    decoration:
-                                    const BoxDecoration(
-                                      color: Colors.red,
-                                      shape:
-                                      BoxShape.circle,
-                                    ),
-                                  ),
-                                ),
-                            ],
-                          ),
-
-                          label: Text(
-                            "Duplicate Alerts ($count)",
-                          ),
-
-                          style:
-                          ElevatedButton.styleFrom(
-
-                            backgroundColor:
-                            selectedView ==
-                                "duplicates"
-                                ? Colors.red
-                                : Colors.white,
-
-                            foregroundColor:
-                            selectedView ==
-                                "duplicates"
-                                ? Colors.white
-                                : Colors.black,
-
-                            padding:
-                            const EdgeInsets.symmetric(
-                              horizontal: 20,
-                              vertical: 16,
-                            ),
-
-                            shape:
-                            RoundedRectangleBorder(
-                              borderRadius:
-                              BorderRadius.circular(
-                                  12),
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                  ],
-                ),
-
-                const SizedBox(height: 30),
-
-                // ✅ SWITCH VIEW
+                // ================= VIEW SWITCH =================
                 selectedView == "items"
                     ? _buildItemsTable()
                     : const DuplicateAlertsScreen(),

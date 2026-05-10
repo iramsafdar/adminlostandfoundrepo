@@ -373,8 +373,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
     "Manage Users",
     "Claims",
     "Analytics",
-    "AI Matches",
-    "Broadcast",
+    "AI Match Monitoring",
+    "Broadcast Notification",
   ];
 
   static const Color bgColor = Color(0xFFEFF5FB);

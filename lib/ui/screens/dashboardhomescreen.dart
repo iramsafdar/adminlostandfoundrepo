@@ -979,13 +979,13 @@ CrossAxisAlignment.start,
 children: [
 
 // 🔷 TITLE
-const Text(
-"Dashboard",
-style: TextStyle(
-fontSize: 32,
-fontWeight: FontWeight.bold,
-),
-),
+// const Text(
+// "Dashboard",
+// style: TextStyle(
+// fontSize: 32,
+// fontWeight: FontWeight.bold,
+// ),
+// ),
 
 const SizedBox(height: 30),
 

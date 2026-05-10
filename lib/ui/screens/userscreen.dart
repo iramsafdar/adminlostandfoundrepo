@@ -1824,13 +1824,13 @@ class _UsersScreenState extends State<UsersScreen> {
 
                   children: const [
 
-                    Text(
-                      "Manage Users",
-                      style: TextStyle(
-                        fontSize: 28,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
+                    // Text(
+                    //   "Manage Users",
+                    //   style: TextStyle(
+                    //     fontSize: 28,
+                    //     fontWeight: FontWeight.bold,
+                    //   ),
+                    // ),
                   ],
                 ),
 

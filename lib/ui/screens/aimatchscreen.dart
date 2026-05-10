@@ -484,15 +484,19 @@ class AIMatchScreen extends StatelessWidget {
 
               children: [
 
-                // 🔷 TITLE
-                const Text(
-                  "AI Match Monitoring",
 
-                  style: TextStyle(
-                    fontSize: 30,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
+
+
+
+                // 🔷 TITLE
+                // const Text(
+                //   "AI Match Monitoring",
+                //
+                //   style: TextStyle(
+                //     fontSize: 30,
+                //     fontWeight: FontWeight.bold,
+                //   ),
+                // ),
 
                 const SizedBox(height: 30),
 
