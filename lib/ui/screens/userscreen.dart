@@ -972,6 +972,599 @@
 // Datatable -> rows: [datarows] ->datacell->text
 //
 
+// import 'package:cloud_firestore/cloud_firestore.dart';
+// import 'package:flutter/material.dart';
+//
+// import '../../services/notifications/send_notification_service.dart';
+//
+// class UsersScreen extends StatefulWidget {
+//   const UsersScreen({super.key});
+//
+//   static const Color darkBlue = Color(0xFF2A417F);
+//   static const Color orange = Color(0xFFF09E27);
+//   static const Color bgColor = Color(0xFFEFF5FB);
+//
+//   @override
+//   State<UsersScreen> createState() => _UsersScreenState();
+// }
+//
+// class _UsersScreenState extends State<UsersScreen> {
+//   Future<void> toggleUserStatus({
+//     required String docId,
+//     required String currentStatus,
+//     required String fcmToken,
+//     required String userName,
+//   }) async {
+//
+//     final newStatus =
+//     currentStatus == "blocked"
+//         ? "active"
+//         : "blocked";
+//
+//     // 🔷 UPDATE FIRESTORE
+//     await FirebaseFirestore.instance
+//         .collection('Users')
+//         .doc(docId)
+//         .update({
+//       'status': newStatus,
+//     });
+//
+//     // 🔷 SEND NOTIFICATION
+//     await SendNotificationService.sendNotification(
+//
+//       token: fcmToken,
+//
+//       title: newStatus == "blocked"
+//           ? "Account Blocked"
+//           : "Account Activated",
+//
+//       body: newStatus == "blocked"
+//           ? "Your account has been blocked by admin."
+//           : "Congratulations!🎉 Your account has been activated again.",
+//
+//       data: {
+//         "screen": "home"
+//       },
+//     );
+//
+//     // 🔷 SUCCESS MESSAGE
+//     ScaffoldMessenger.of(context).showSnackBar(
+//
+//       SnackBar(
+//
+//         backgroundColor: Colors.green,
+//
+//         content: Text(
+//           "$userName is now $newStatus",
+//         ),
+//       ),
+//     );
+//   }
+//
+//   void showUserDetails({
+//
+//     required Map<String, dynamic> data,
+//
+//   }) {
+//
+//     showDialog(
+//
+//       context: context,
+//
+//       builder: (context) {
+//
+//         return AlertDialog(
+//
+//           shape: RoundedRectangleBorder(
+//             borderRadius: BorderRadius.circular(20),
+//           ),
+//
+//           title: const Text(
+//             "User Details",
+//             style: TextStyle(
+//               fontWeight: FontWeight.bold,
+//             ),
+//           ),
+//
+//           content: SizedBox(
+//
+//             width: 400,
+//
+//             child: Column(
+//               mainAxisSize: MainAxisSize.min,
+//
+//               children: [
+//
+//                 // 👤 AVATAR
+//                 CircleAvatar(
+//                   radius: 40,
+//                   backgroundColor: UsersScreen.darkBlue,
+//
+//                   child: Text(
+//
+//                     data['name'] != null
+//                         ? data['name'][0].toUpperCase()
+//                         : "U",
+//
+//                     style: const TextStyle(
+//                       color: Colors.white,
+//                       fontSize: 28,
+//                       fontWeight: FontWeight.bold,
+//                     ),
+//                   ),
+//                 ),
+//
+//                 const SizedBox(height: 20),
+//
+//                 _detailRow(
+//                   "Name",
+//                   data['name'] ?? "N/A",
+//                 ),
+//
+//                 _detailRow(
+//                   "Email",
+//                   data['email'] ?? "N/A",
+//                 ),
+//
+//                 _detailRow(
+//                   "Role",
+//                   data['role'] ?? "user",
+//                 ),
+//
+//                 _detailRow(
+//                   "Status",
+//                   data['status'] ?? "active",
+//                 ),
+//
+//                 _detailRow(
+//                   "UID",
+//                   data['uid'] ?? "N/A",
+//                 ),
+//
+//                 _detailRow(
+//                   "FCM Token",
+//                   data['fcmToken'] != null
+//                       ? "Available"
+//                       : "Not Found",
+//                 ),
+//               ],
+//             ),
+//           ),
+//
+//           actions: [
+//
+//             TextButton(
+//
+//               onPressed: () {
+//                 Navigator.pop(context);
+//               },
+//
+//               child: const Text("Close"),
+//             ),
+//           ],
+//         );
+//       },
+//     );
+//   }
+//   Widget _detailRow(
+//       String title,
+//       String value,
+//       ) {
+//
+//     return Padding(
+//       padding: const EdgeInsets.symmetric(vertical: 8),
+//
+//       child: Row(
+//         crossAxisAlignment: CrossAxisAlignment.start,
+//
+//         children: [
+//
+//           SizedBox(
+//             width: 100,
+//
+//             child: Text(
+//
+//               "$title:",
+//
+//               style: const TextStyle(
+//                 fontWeight: FontWeight.bold,
+//               ),
+//             ),
+//           ),
+//
+//           Expanded(
+//             child: Text(value),
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+//   final TextEditingController searchController = TextEditingController();
+//   String searchQuery = "";
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return SingleChildScrollView(
+//       padding: const EdgeInsets.all(25),
+//
+//       child: Column(
+//         crossAxisAlignment: CrossAxisAlignment.start,
+//
+//         children: [
+//
+//           // 🔷 HEADER
+//           Row(
+//             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//
+//             children: const [
+//               Text(
+//                 "Manage Users",
+//                 style: TextStyle(
+//                   fontSize: 28,
+//                   fontWeight: FontWeight.bold,
+//                 ),
+//               ),
+//             ],
+//           ),
+//
+//           const SizedBox(height: 25),
+//
+//           // 🔍 SEARCH BAR
+//           Container(
+//             width: 350,
+//             height: 50,
+//
+//             decoration: BoxDecoration(
+//               color: Colors.white,
+//               borderRadius: BorderRadius.circular(12),
+//               boxShadow: [
+//                 BoxShadow(
+//                   color: Colors.black12,
+//                   blurRadius: 6,
+//                   offset: Offset(0, 2),
+//                 ),
+//               ],
+//             ),
+//
+//             child: TextField(
+//               controller: searchController,
+//               decoration: const InputDecoration(
+//                 hintText: "Search users...",
+//                 prefixIcon: Icon(Icons.search),
+//                 border: InputBorder.none,
+//                 contentPadding: EdgeInsets.symmetric(vertical: 14),
+//               ),
+//
+//               onChanged: (value) {
+//                 setState(() {
+//                   searchQuery = value.toLowerCase();
+//                 });
+//               },
+//             ),
+//           ),
+//
+//           const SizedBox(height: 30),
+//
+//           // 🔷 USERS TABLE
+//
+//           Container(
+//
+//
+//             width: 800,
+//             padding: const EdgeInsets.all(20),
+//
+//             decoration: BoxDecoration(
+//               color: Colors.white,
+//               borderRadius: BorderRadius.circular(16),
+//               boxShadow: [
+//                 BoxShadow(
+//                   color: Colors.black12,
+//                   blurRadius: 8,
+//                   offset: const Offset(0, 3),
+//                 ),
+//               ],
+//             ),
+//
+//             child: StreamBuilder<QuerySnapshot>(
+//               stream: FirebaseFirestore.instance
+//                   .collection('Users')
+//                   .snapshots(),
+//
+//               builder: (context, snapshot) {
+//                 if (!snapshot.hasData) {
+//                   return const Center(
+//                     child: CircularProgressIndicator(),
+//                   );
+//                 }
+//
+//                 final users = snapshot.data!.docs;
+//
+//                 return SingleChildScrollView(
+//                   scrollDirection: Axis.horizontal,
+//
+//                   child: DataTable(
+//                     columnSpacing: 40,
+//                     horizontalMargin: 20,
+//
+//                     headingRowColor:
+//                     MaterialStateProperty.all(UsersScreen.bgColor),
+//
+//                     columns: const [
+//                       DataColumn(label: Text("Name")),
+//                       DataColumn(label: Text("Email")),
+//                       DataColumn(label: Text("Role")),
+//                       DataColumn(label: Text("Status")),
+//                       DataColumn(label: Text("Actions")),
+//                     ],
+//
+//                     rows: users.map((doc) {
+//                       final data =
+//                       doc.data() as Map<String, dynamic>;
+//
+//                       final name = (data['name'] ?? '').toString();
+//                       final email = (data['email'] ?? '').toString();
+//                       final role = (data['role'] ?? 'user').toString();
+//                       final status =
+//                       (data['status'] ?? 'active').toString();
+//
+//                       final fcmToken =
+//                       (data['fcmToken'] ?? '').toString();
+//                       // final status =
+//                       // (data['status'] ?? 'active').toString();
+//
+//                       // 🔍 SEARCH FILTER
+//                       if (!name.toLowerCase().contains(searchQuery) &&
+//                           !email.toLowerCase().contains(searchQuery)) {
+//                         return null;
+//                       }
+//
+//                       return DataRow(
+//                         cells: [
+//
+//                           // 👤 NAME
+//                           DataCell(
+//                             Row(
+//                               children: [
+//                                 CircleAvatar(
+//                                   backgroundColor:
+//                                   UsersScreen.darkBlue,
+//                                   child: Text(
+//                                     name.isNotEmpty
+//                                         ? name[0].toUpperCase()
+//                                         : "U",
+//                                     style: const TextStyle(
+//                                         color: Colors.white),
+//                                   ),
+//                                 ),
+//                                 const SizedBox(width: 20),
+//                                 Text(name),
+//                               ],
+//                             ),
+//                           ),
+//
+//                           // 📧 EMAIL
+//                           DataCell(Text(email)),
+//
+//                           // 🔷 ROLE
+//                           DataCell(
+//                             Text(role.toUpperCase()),
+//                           ),
+//
+//                           // 🟢 STATUS (REAL FIRESTORE VALUE)
+//                           DataCell(
+//
+//                             Container(
+//                               padding: const EdgeInsets.symmetric(
+//                                 horizontal: 12,
+//                                 vertical: 6,
+//                               ),
+//
+//                               decoration: BoxDecoration(
+//
+//                                 color: status == "blocked"
+//                                     ? Colors.red.withOpacity(0.15)
+//                                     : Colors.green.withOpacity(0.15),
+//
+//                                 borderRadius: BorderRadius.circular(20),
+//                               ),
+//
+//                               child: Text(
+//
+//                                 status.toUpperCase(),
+//
+//                                 style: TextStyle(
+//
+//                                   color: status == "blocked"
+//                                       ? Colors.red
+//                                       : Colors.green,
+//
+//                                   fontWeight: FontWeight.bold,
+//                                 ),
+//                               ),
+//                             ),
+//                           ),
+//                           // DataCell(
+//                           //   Container(
+//                           //     padding: const EdgeInsets.symmetric(
+//                           //       horizontal: 12,
+//                           //       vertical: 6,
+//                           //     ),
+//                           //     decoration: BoxDecoration(
+//                           //       color: status == "active"
+//                           //           ? Colors.green.withOpacity(0.15)
+//                           //           : Colors.red.withOpacity(0.15),
+//                           //       borderRadius: BorderRadius.circular(20),
+//                           //     ),
+//                           //     child: Text(
+//                           //       status.toUpperCase(),
+//                           //       style: TextStyle(
+//                           //         color: status == "active"
+//                           //             ? Colors.green
+//                           //             : Colors.red,
+//                           //         fontWeight: FontWeight.bold,
+//                           //       ),
+//                           //     ),
+//                           //   ),
+//                           // ),
+//
+//                           // ⚙ ACTIONS
+//                           DataCell(
+//                             Row(
+//                               children: [
+//
+//                                 // 👁 VIEW
+//                                 IconButton(
+//
+//                                   onPressed: () {
+//
+//                                     showUserDetails(
+//                                       data: data,
+//                                     );
+//                                   },
+//
+//                                   icon: const Icon(
+//                                     Icons.visibility,
+//                                     color: Colors.blue,
+//                                   ),
+//                                 ),
+//
+//                                 // 🚫 BLOCK USER (only if active)
+//                                 if (status == "active")
+//                                   IconButton(
+//
+//                                     onPressed: () async {
+//
+//                                       await toggleUserStatus(
+//
+//                                         docId: doc.id,
+//
+//                                         currentStatus: status,
+//
+//                                         fcmToken: fcmToken,
+//
+//                                         userName: name,
+//                                       );
+//                                     },
+//
+//                                     icon: Icon(
+//
+//                                       status == "blocked"
+//                                           ? Icons.lock_open
+//                                           : Icons.block,
+//
+//                                       color: status == "blocked"
+//                                           ? Colors.green
+//                                           : Colors.orange,
+//                                     ),
+//                                   ),
+//                                 // IconButton(
+//                                 //   tooltip: "Block User",
+//                                 //   onPressed: () async {
+//                                 //     await FirebaseFirestore.instance
+//                                 //         .collection('Users')
+//                                 //         .doc(doc.id)
+//                                 //         .update({
+//                                 //       'status': 'blocked',
+//                                 //     });
+//                                 //   },
+//                                 //   icon: const Icon(
+//                                 //     Icons.block,
+//                                 //     color: Colors.red,
+//                                 //   ),
+//                                 // ),
+//
+//                                 // ✅ UNBLOCK USER (only if blocked)
+//                                 // if (status == "blocked")
+//                                 //   IconButton(
+//                                 //     tooltip: "Unblock User",
+//                                 //     onPressed: () async {
+//                                 //       await FirebaseFirestore.instance
+//                                 //           .collection('Users')
+//                                 //           .doc(doc.id)
+//                                 //           .update({
+//                                 //         'status': 'active',
+//                                 //       });
+//                                 //     },
+//                                 //     icon: const Icon(
+//                                 //       Icons.lock_open,
+//                                 //       color: Colors.green,
+//                                 //     ),
+//                                 //   ),
+//                                 if (status == "blocked")
+//                                   IconButton(
+//                                     tooltip: "Unblock User",
+//                                     onPressed: () async {
+//
+//                                       await toggleUserStatus(
+//                                         docId: doc.id,
+//                                         currentStatus: status,
+//                                         fcmToken: fcmToken,
+//                                         userName: name,
+//                                       );
+//                                     },
+//
+//                                     icon: const Icon(
+//                                       Icons.lock_open,
+//                                       color: Colors.green,
+//                                     ),
+//                                   ),
+//                               ],
+//                             ),
+//                           ),
+//                           // DataCell(
+//                           //   Row(
+//                           //     children: [
+//                           //
+//                           //       // 👁 VIEW (future use)
+//                           //       IconButton(
+//                           //         onPressed: () {},
+//                           //         icon: const Icon(Icons.visibility,
+//                           //             color: Colors.blue),
+//                           //       ),
+//                           //
+//                           //       // 🚫 BLOCK / UNBLOCK TOGGLE
+//                           //       IconButton(
+//                           //         onPressed: () async {
+//                           //           final newStatus =
+//                           //           status == "active"
+//                           //               ? "blocked"
+//                           //               : "active";
+//                           //
+//                           //           await FirebaseFirestore.instance
+//                           //               .collection('Users')
+//                           //               .doc(doc.id)
+//                           //               .update({
+//                           //             'status': newStatus,
+//                           //           });
+//                           //         },
+//                           //
+//                           //         icon: Icon(
+//                           //           status == "active"
+//                           //               ? Icons.block
+//                           //               : Icons.check_circle,
+//                           //           color: status == "active"
+//                           //               ? Colors.orange
+//                           //               : Colors.green,
+//                           //         ),
+//                           //       ),
+//                           //     ],
+//                           //   ),
+//                           // ),
+//                         ],
+//                       );
+//                     }).whereType<DataRow>().toList(),
+//                   ),
+//                 );
+//               },
+//             ),
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+// }
+
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
@@ -989,6 +1582,12 @@ class UsersScreen extends StatefulWidget {
 }
 
 class _UsersScreenState extends State<UsersScreen> {
+
+  final TextEditingController searchController =
+  TextEditingController();
+
+  String searchQuery = "";
+
   Future<void> toggleUserStatus({
     required String docId,
     required String currentStatus,
@@ -1070,64 +1669,67 @@ class _UsersScreenState extends State<UsersScreen> {
 
             width: 400,
 
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
+            child: SingleChildScrollView(
 
-              children: [
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
 
-                // 👤 AVATAR
-                CircleAvatar(
-                  radius: 40,
-                  backgroundColor: UsersScreen.darkBlue,
+                children: [
 
-                  child: Text(
+                  // 👤 AVATAR
+                  CircleAvatar(
+                    radius: 40,
+                    backgroundColor: UsersScreen.darkBlue,
 
-                    data['name'] != null
-                        ? data['name'][0].toUpperCase()
-                        : "U",
+                    child: Text(
 
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 28,
-                      fontWeight: FontWeight.bold,
+                      data['name'] != null
+                          ? data['name'][0].toUpperCase()
+                          : "U",
+
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
-                ),
 
-                const SizedBox(height: 20),
+                  const SizedBox(height: 20),
 
-                _detailRow(
-                  "Name",
-                  data['name'] ?? "N/A",
-                ),
+                  _detailRow(
+                    "Name",
+                    data['name'] ?? "N/A",
+                  ),
 
-                _detailRow(
-                  "Email",
-                  data['email'] ?? "N/A",
-                ),
+                  _detailRow(
+                    "Email",
+                    data['email'] ?? "N/A",
+                  ),
 
-                _detailRow(
-                  "Role",
-                  data['role'] ?? "user",
-                ),
+                  _detailRow(
+                    "Role",
+                    data['role'] ?? "user",
+                  ),
 
-                _detailRow(
-                  "Status",
-                  data['status'] ?? "active",
-                ),
+                  _detailRow(
+                    "Status",
+                    data['status'] ?? "active",
+                  ),
 
-                _detailRow(
-                  "UID",
-                  data['uid'] ?? "N/A",
-                ),
+                  _detailRow(
+                    "UID",
+                    data['uid'] ?? "N/A",
+                  ),
 
-                _detailRow(
-                  "FCM Token",
-                  data['fcmToken'] != null
-                      ? "Available"
-                      : "Not Found",
-                ),
-              ],
+                  _detailRow(
+                    "FCM Token",
+                    data['fcmToken'] != null
+                        ? "Available"
+                        : "Not Found",
+                  ),
+                ],
+              ),
             ),
           ),
 
@@ -1146,6 +1748,7 @@ class _UsersScreenState extends State<UsersScreen> {
       },
     );
   }
+
   Widget _detailRow(
       String title,
       String value,
@@ -1179,387 +1782,439 @@ class _UsersScreenState extends State<UsersScreen> {
       ),
     );
   }
-  final TextEditingController searchController = TextEditingController();
-  String searchQuery = "";
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(25),
 
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+    // ✅ FIXED OVERFLOW ISSUES
+    // 1. Added LayoutBuilder
+    // 2. Added ConstrainedBox
+    // 3. Replaced Row with Wrap
+    // 4. Removed fixed width: 800
+    // 5. Added horizontal scrolling
+    // 6. Added safe width for search bar
 
-        children: [
+    return LayoutBuilder(
 
-          // 🔷 HEADER
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      builder: (context, constraints) {
 
-            children: const [
-              Text(
-                "Manage Users",
-                style: TextStyle(
-                  fontSize: 28,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ],
-          ),
+        return SingleChildScrollView(
+          padding: const EdgeInsets.all(25),
 
-          const SizedBox(height: 25),
+          child: ConstrainedBox(
 
-          // 🔍 SEARCH BAR
-          Container(
-            width: 350,
-            height: 50,
-
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(12),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black12,
-                  blurRadius: 6,
-                  offset: Offset(0, 2),
-                ),
-              ],
+            constraints: BoxConstraints(
+              minWidth: constraints.maxWidth,
             ),
 
-            child: TextField(
-              controller: searchController,
-              decoration: const InputDecoration(
-                hintText: "Search users...",
-                prefixIcon: Icon(Icons.search),
-                border: InputBorder.none,
-                contentPadding: EdgeInsets.symmetric(vertical: 14),
-              ),
+            child: Column(
+              crossAxisAlignment:
+              CrossAxisAlignment.start,
 
-              onChanged: (value) {
-                setState(() {
-                  searchQuery = value.toLowerCase();
-                });
-              },
-            ),
-          ),
+              children: [
 
-          const SizedBox(height: 30),
+                // 🔷 HEADER
+                Wrap(
 
-          // 🔷 USERS TABLE
+                  spacing: 15,
+                  runSpacing: 15,
 
-          Container(
+                  alignment:
+                  WrapAlignment.spaceBetween,
 
+                  children: const [
 
-            width: 800,
-            padding: const EdgeInsets.all(20),
-
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(16),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black12,
-                  blurRadius: 8,
-                  offset: const Offset(0, 3),
+                    Text(
+                      "Manage Users",
+                      style: TextStyle(
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
 
-            child: StreamBuilder<QuerySnapshot>(
-              stream: FirebaseFirestore.instance
-                  .collection('Users')
-                  .snapshots(),
+                const SizedBox(height: 25),
 
-              builder: (context, snapshot) {
-                if (!snapshot.hasData) {
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
-                }
+                // 🔍 SEARCH BAR
+                SingleChildScrollView(
 
-                final users = snapshot.data!.docs;
-
-                return SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
 
-                  child: DataTable(
-                    columnSpacing: 40,
-                    horizontalMargin: 20,
+                  child: Container(
 
-                    headingRowColor:
-                    MaterialStateProperty.all(UsersScreen.bgColor),
+                    width: 350,
+                    height: 50,
 
-                    columns: const [
-                      DataColumn(label: Text("Name")),
-                      DataColumn(label: Text("Email")),
-                      DataColumn(label: Text("Role")),
-                      DataColumn(label: Text("Status")),
-                      DataColumn(label: Text("Actions")),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius:
+                      BorderRadius.circular(12),
+
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black12,
+                          blurRadius: 6,
+                          offset: Offset(0, 2),
+                        ),
+                      ],
+                    ),
+
+                    child: TextField(
+                      controller: searchController,
+
+                      decoration: const InputDecoration(
+                        hintText: "Search users...",
+                        prefixIcon: Icon(Icons.search),
+                        border: InputBorder.none,
+
+                        contentPadding:
+                        EdgeInsets.symmetric(
+                          vertical: 14,
+                        ),
+                      ),
+
+                      onChanged: (value) {
+
+                        setState(() {
+                          searchQuery =
+                              value.toLowerCase();
+                        });
+                      },
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 30),
+
+                // 🔷 USERS TABLE
+                Container(
+
+                  // ✅ Removed fixed width: 800
+                  width: double.infinity,
+
+                  padding: const EdgeInsets.all(20),
+
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+
+                    borderRadius:
+                    BorderRadius.circular(16),
+
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black12,
+                        blurRadius: 8,
+
+                        offset: const Offset(0, 3),
+                      ),
                     ],
+                  ),
 
-                    rows: users.map((doc) {
-                      final data =
-                      doc.data() as Map<String, dynamic>;
+                  child: StreamBuilder<QuerySnapshot>(
 
-                      final name = (data['name'] ?? '').toString();
-                      final email = (data['email'] ?? '').toString();
-                      final role = (data['role'] ?? 'user').toString();
-                      final status =
-                      (data['status'] ?? 'active').toString();
+                    stream: FirebaseFirestore.instance
+                        .collection('Users')
+                        .snapshots(),
 
-                      final fcmToken =
-                      (data['fcmToken'] ?? '').toString();
-                      // final status =
-                      // (data['status'] ?? 'active').toString();
+                    builder: (context, snapshot) {
 
-                      // 🔍 SEARCH FILTER
-                      if (!name.toLowerCase().contains(searchQuery) &&
-                          !email.toLowerCase().contains(searchQuery)) {
-                        return null;
+                      if (!snapshot.hasData) {
+
+                        return const Center(
+                          child:
+                          CircularProgressIndicator(),
+                        );
                       }
 
-                      return DataRow(
-                        cells: [
+                      final users =
+                          snapshot.data!.docs;
 
-                          // 👤 NAME
-                          DataCell(
-                            Row(
-                              children: [
-                                CircleAvatar(
-                                  backgroundColor:
-                                  UsersScreen.darkBlue,
-                                  child: Text(
-                                    name.isNotEmpty
-                                        ? name[0].toUpperCase()
-                                        : "U",
-                                    style: const TextStyle(
-                                        color: Colors.white),
+                      return SingleChildScrollView(
+
+                        scrollDirection:
+                        Axis.horizontal,
+
+                        child: DataTable(
+
+                          columnSpacing: 40,
+                          horizontalMargin: 20,
+
+                          headingRowColor:
+                          MaterialStateProperty.all(
+                            UsersScreen.bgColor,
+                          ),
+
+                          columns: const [
+
+                            DataColumn(
+                              label: Text("Name"),
+                            ),
+
+                            DataColumn(
+                              label: Text("Email"),
+                            ),
+
+                            DataColumn(
+                              label: Text("Role"),
+                            ),
+
+                            DataColumn(
+                              label: Text("Status"),
+                            ),
+
+                            DataColumn(
+                              label: Text("Actions"),
+                            ),
+                          ],
+
+                          rows:
+                          users.map((doc) {
+
+                            final data =
+                            doc.data()
+                            as Map<String, dynamic>;
+
+                            final name =
+                            (data['name'] ?? '')
+                                .toString();
+
+                            final email =
+                            (data['email'] ?? '')
+                                .toString();
+
+                            final role =
+                            (data['role'] ?? 'user')
+                                .toString();
+
+                            final status =
+                            (data['status'] ??
+                                'active')
+                                .toString();
+
+                            final fcmToken =
+                            (data['fcmToken'] ?? '')
+                                .toString();
+
+                            // 🔍 SEARCH FILTER
+                            if (!name
+                                .toLowerCase()
+                                .contains(searchQuery) &&
+                                !email
+                                    .toLowerCase()
+                                    .contains(searchQuery)) {
+
+                              return null;
+                            }
+
+                            return DataRow(
+
+                              cells: [
+
+                                // 👤 NAME
+                                DataCell(
+
+                                  Row(
+                                    children: [
+
+                                      CircleAvatar(
+                                        backgroundColor:
+                                        UsersScreen
+                                            .darkBlue,
+
+                                        child: Text(
+
+                                          name.isNotEmpty
+                                              ? name[0]
+                                              .toUpperCase()
+                                              : "U",
+
+                                          style:
+                                          const TextStyle(
+                                            color:
+                                            Colors.white,
+                                          ),
+                                        ),
+                                      ),
+
+                                      const SizedBox(
+                                          width: 20),
+
+                                      Text(name),
+                                    ],
                                   ),
                                 ),
-                                const SizedBox(width: 20),
-                                Text(name),
-                              ],
-                            ),
-                          ),
 
-                          // 📧 EMAIL
-                          DataCell(Text(email)),
-
-                          // 🔷 ROLE
-                          DataCell(
-                            Text(role.toUpperCase()),
-                          ),
-
-                          // 🟢 STATUS (REAL FIRESTORE VALUE)
-                          DataCell(
-
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 12,
-                                vertical: 6,
-                              ),
-
-                              decoration: BoxDecoration(
-
-                                color: status == "blocked"
-                                    ? Colors.red.withOpacity(0.15)
-                                    : Colors.green.withOpacity(0.15),
-
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-
-                              child: Text(
-
-                                status.toUpperCase(),
-
-                                style: TextStyle(
-
-                                  color: status == "blocked"
-                                      ? Colors.red
-                                      : Colors.green,
-
-                                  fontWeight: FontWeight.bold,
+                                // 📧 EMAIL
+                                DataCell(
+                                  Text(email),
                                 ),
-                              ),
-                            ),
-                          ),
-                          // DataCell(
-                          //   Container(
-                          //     padding: const EdgeInsets.symmetric(
-                          //       horizontal: 12,
-                          //       vertical: 6,
-                          //     ),
-                          //     decoration: BoxDecoration(
-                          //       color: status == "active"
-                          //           ? Colors.green.withOpacity(0.15)
-                          //           : Colors.red.withOpacity(0.15),
-                          //       borderRadius: BorderRadius.circular(20),
-                          //     ),
-                          //     child: Text(
-                          //       status.toUpperCase(),
-                          //       style: TextStyle(
-                          //         color: status == "active"
-                          //             ? Colors.green
-                          //             : Colors.red,
-                          //         fontWeight: FontWeight.bold,
-                          //       ),
-                          //     ),
-                          //   ),
-                          // ),
 
-                          // ⚙ ACTIONS
-                          DataCell(
-                            Row(
-                              children: [
-
-                                // 👁 VIEW
-                                IconButton(
-
-                                  onPressed: () {
-
-                                    showUserDetails(
-                                      data: data,
-                                    );
-                                  },
-
-                                  icon: const Icon(
-                                    Icons.visibility,
-                                    color: Colors.blue,
+                                // 🔷 ROLE
+                                DataCell(
+                                  Text(
+                                    role.toUpperCase(),
                                   ),
                                 ),
 
-                                // 🚫 BLOCK USER (only if active)
-                                if (status == "active")
-                                  IconButton(
+                                // 🟢 STATUS
+                                DataCell(
 
-                                    onPressed: () async {
+                                  Container(
+                                    padding:
+                                    const EdgeInsets
+                                        .symmetric(
+                                      horizontal: 12,
+                                      vertical: 6,
+                                    ),
 
-                                      await toggleUserStatus(
+                                    decoration:
+                                    BoxDecoration(
 
-                                        docId: doc.id,
-
-                                        currentStatus: status,
-
-                                        fcmToken: fcmToken,
-
-                                        userName: name,
-                                      );
-                                    },
-
-                                    icon: Icon(
-
+                                      color:
                                       status == "blocked"
-                                          ? Icons.lock_open
-                                          : Icons.block,
+                                          ? Colors.red
+                                          .withOpacity(
+                                          0.15)
+                                          : Colors.green
+                                          .withOpacity(
+                                          0.15),
 
-                                      color: status == "blocked"
-                                          ? Colors.green
-                                          : Colors.orange,
+                                      borderRadius:
+                                      BorderRadius
+                                          .circular(
+                                          20),
+                                    ),
+
+                                    child: Text(
+
+                                      status.toUpperCase(),
+
+                                      style: TextStyle(
+
+                                        color:
+                                        status == "blocked"
+                                            ? Colors.red
+                                            : Colors.green,
+
+                                        fontWeight:
+                                        FontWeight.bold,
+                                      ),
                                     ),
                                   ),
-                                // IconButton(
-                                //   tooltip: "Block User",
-                                //   onPressed: () async {
-                                //     await FirebaseFirestore.instance
-                                //         .collection('Users')
-                                //         .doc(doc.id)
-                                //         .update({
-                                //       'status': 'blocked',
-                                //     });
-                                //   },
-                                //   icon: const Icon(
-                                //     Icons.block,
-                                //     color: Colors.red,
-                                //   ),
-                                // ),
+                                ),
 
-                                // ✅ UNBLOCK USER (only if blocked)
-                                // if (status == "blocked")
-                                //   IconButton(
-                                //     tooltip: "Unblock User",
-                                //     onPressed: () async {
-                                //       await FirebaseFirestore.instance
-                                //           .collection('Users')
-                                //           .doc(doc.id)
-                                //           .update({
-                                //         'status': 'active',
-                                //       });
-                                //     },
-                                //     icon: const Icon(
-                                //       Icons.lock_open,
-                                //       color: Colors.green,
-                                //     ),
-                                //   ),
-                                if (status == "blocked")
-                                  IconButton(
-                                    tooltip: "Unblock User",
-                                    onPressed: () async {
+                                // ⚙ ACTIONS
+                                DataCell(
 
-                                      await toggleUserStatus(
-                                        docId: doc.id,
-                                        currentStatus: status,
-                                        fcmToken: fcmToken,
-                                        userName: name,
-                                      );
-                                    },
+                                  Row(
+                                    children: [
 
-                                    icon: const Icon(
-                                      Icons.lock_open,
-                                      color: Colors.green,
-                                    ),
+                                      // 👁 VIEW
+                                      IconButton(
+
+                                        tooltip:
+                                        "View User",
+
+                                        onPressed: () {
+
+                                          showUserDetails(
+                                            data: data,
+                                          );
+                                        },
+
+                                        icon: const Icon(
+                                          Icons.visibility,
+                                          color: Colors.blue,
+                                        ),
+                                      ),
+
+                                      // 🚫 BLOCK USER
+                                      if (status == "active")
+
+                                        IconButton(
+
+                                          tooltip:
+                                          "Block User",
+
+                                          onPressed:
+                                              () async {
+
+                                            await toggleUserStatus(
+
+                                              docId: doc.id,
+
+                                              currentStatus:
+                                              status,
+
+                                              fcmToken:
+                                              fcmToken,
+
+                                              userName:
+                                              name,
+                                            );
+                                          },
+
+                                          icon: const Icon(
+
+                                            Icons.block,
+
+                                            color:
+                                            Colors.orange,
+                                          ),
+                                        ),
+
+                                      // ✅ UNBLOCK USER
+                                      if (status == "blocked")
+
+                                        IconButton(
+
+                                          tooltip:
+                                          "Unblock User",
+
+                                          onPressed:
+                                              () async {
+
+                                            await toggleUserStatus(
+
+                                              docId: doc.id,
+
+                                              currentStatus:
+                                              status,
+
+                                              fcmToken:
+                                              fcmToken,
+
+                                              userName:
+                                              name,
+                                            );
+                                          },
+
+                                          icon: const Icon(
+
+                                            Icons.lock_open,
+
+                                            color:
+                                            Colors.green,
+                                          ),
+                                        ),
+                                    ],
                                   ),
+                                ),
                               ],
-                            ),
-                          ),
-                          // DataCell(
-                          //   Row(
-                          //     children: [
-                          //
-                          //       // 👁 VIEW (future use)
-                          //       IconButton(
-                          //         onPressed: () {},
-                          //         icon: const Icon(Icons.visibility,
-                          //             color: Colors.blue),
-                          //       ),
-                          //
-                          //       // 🚫 BLOCK / UNBLOCK TOGGLE
-                          //       IconButton(
-                          //         onPressed: () async {
-                          //           final newStatus =
-                          //           status == "active"
-                          //               ? "blocked"
-                          //               : "active";
-                          //
-                          //           await FirebaseFirestore.instance
-                          //               .collection('Users')
-                          //               .doc(doc.id)
-                          //               .update({
-                          //             'status': newStatus,
-                          //           });
-                          //         },
-                          //
-                          //         icon: Icon(
-                          //           status == "active"
-                          //               ? Icons.block
-                          //               : Icons.check_circle,
-                          //           color: status == "active"
-                          //               ? Colors.orange
-                          //               : Colors.green,
-                          //         ),
-                          //       ),
-                          //     ],
-                          //   ),
-                          // ),
-                        ],
+                            );
+
+                          }).whereType<DataRow>().toList(),
+                        ),
                       );
-                    }).whereType<DataRow>().toList(),
+                    },
                   ),
-                );
-              },
+                ),
+              ],
             ),
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 }
