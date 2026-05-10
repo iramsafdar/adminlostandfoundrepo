@@ -781,80 +781,144 @@ class _ItemsScreenState extends State<ItemsScreen> {
                                         ),
                                       ),
 
+                                      // IconButton(
+                                      //   tooltip:"Flag Item",
+                                      //   onPressed: () async {
+                                      //
+                                      //     try {
+                                      //
+                                      //       if (data['flagged'] == true) {
+                                      //
+                                      //         ScaffoldMessenger.of(context).showSnackBar(
+                                      //           const SnackBar(
+                                      //             content: Text("Item is already flagged"),
+                                      //           ),
+                                      //         );
+                                      //
+                                      //         return;
+                                      //       }
+                                      //
+                                      //       await FirebaseFirestore.instance
+                                      //           .collection('items')
+                                      //           .doc(doc.id)
+                                      //           .update({
+                                      //         "flagged": true,
+                                      //       });
+                                      //
+                                      //       final token = data['fcmToken'];
+                                      //
+                                      //       if (token != null &&
+                                      //           token.toString().isNotEmpty) {
+                                      //
+                                      //         await SendNotificationService
+                                      //             .sendNotificationUsingApi(
+                                      //
+                                      //           token: token,
+                                      //
+                                      //           title: "⚠ Item Hidden by Admin",
+                                      //
+                                      //           body:
+                                      //           "Your item '${data['itemName']}' was temporarily hidden due to suspicious or incorrect information.",
+                                      //
+                                      //           data: {
+                                      //             "screen": "itemDetail",
+                                      //             "itemId": doc.id,
+                                      //           },
+                                      //         );
+                                      //       }
+                                      //
+                                      //       ScaffoldMessenger.of(context)
+                                      //           .showSnackBar(
+                                      //         const SnackBar(
+                                      //           content: Text(
+                                      //             "Item flagged successfully",
+                                      //           ),
+                                      //         ),
+                                      //       );
+                                      //
+                                      //     } catch (e) {
+                                      //
+                                      //       ScaffoldMessenger.of(context)
+                                      //           .showSnackBar(
+                                      //         SnackBar(
+                                      //           content: Text(
+                                      //             "Error: $e",
+                                      //           ),
+                                      //         ),
+                                      //       );
+                                      //     }
+                                      //   },
+                                      //
+                                      //   icon: const Icon(
+                                      //     Icons.flag,
+                                      //     color: Colors.orange,
+                                      //   ),
+                                      // ),
                                       IconButton(
-                                        tooltip:"Flag Item",
+                                        tooltip: data['flagged'] == true
+                                            ? "Unflag Item"
+                                            : "Flag Item",
+
                                         onPressed: () async {
-
                                           try {
+                                            final isFlagged = data['flagged'] == true;
 
-                                            if (data['flagged'] == true) {
-
-                                              ScaffoldMessenger.of(context).showSnackBar(
-                                                const SnackBar(
-                                                  content: Text("Item is already flagged"),
-                                                ),
-                                              );
-
-                                              return;
-                                            }
+                                            // Toggle value
+                                            final newStatus = !isFlagged;
 
                                             await FirebaseFirestore.instance
                                                 .collection('items')
                                                 .doc(doc.id)
                                                 .update({
-                                              "flagged": true,
+                                              "flagged": newStatus,
                                             });
 
-                                            final token = data['fcmToken'];
+                                            // 🔔 Send notification ONLY when flagging (optional logic)
+                                            if (newStatus == true) {
+                                              final token = data['fcmToken'];
 
-                                            if (token != null &&
-                                                token.toString().isNotEmpty) {
-
-                                              await SendNotificationService
-                                                  .sendNotificationUsingApi(
-
-                                                token: token,
-
-                                                title: "⚠ Item Hidden by Admin",
-
-                                                body:
-                                                "Your item '${data['itemName']}' was temporarily hidden due to suspicious or incorrect information.",
-
-                                                data: {
-                                                  "screen": "itemDetail",
-                                                  "itemId": doc.id,
-                                                },
-                                              );
+                                              if (token != null && token.toString().isNotEmpty) {
+                                                await SendNotificationService.sendNotificationUsingApi(
+                                                  token: token,
+                                                  title: "⚠ Item Hidden by Admin",
+                                                  body:
+                                                  "Your item '${data['itemName']}' was temporarily hidden due to suspicious or incorrect information.",
+                                                  data: {
+                                                    "screen": "itemDetail",
+                                                    "itemId": doc.id,
+                                                  },
+                                                );
+                                              }
                                             }
 
-                                            ScaffoldMessenger.of(context)
-                                                .showSnackBar(
-                                              const SnackBar(
+                                            ScaffoldMessenger.of(context).showSnackBar(
+                                              SnackBar(
                                                 content: Text(
-                                                  "Item flagged successfully",
+                                                  newStatus
+                                                      ? "Item flagged successfully"
+                                                      : "Item unflagged successfully",
                                                 ),
                                               ),
                                             );
 
                                           } catch (e) {
-
-                                            ScaffoldMessenger.of(context)
-                                                .showSnackBar(
+                                            ScaffoldMessenger.of(context).showSnackBar(
                                               SnackBar(
-                                                content: Text(
-                                                  "Error: $e",
-                                                ),
+                                                content: Text("Error: $e"),
                                               ),
                                             );
                                           }
                                         },
 
-                                        icon: const Icon(
-                                          Icons.flag,
-                                          color: Colors.orange,
+                                        icon: Icon(
+                                          data['flagged'] == true
+                                              ? Icons.flag
+                                              : Icons.outlined_flag,
+                                          color: data['flagged'] == true
+                                              ? Colors.red
+                                              : Colors.orange,
                                         ),
                                       ),
-
                                       IconButton(
                                         tooltip:"Delete Item",
                                         onPressed:
