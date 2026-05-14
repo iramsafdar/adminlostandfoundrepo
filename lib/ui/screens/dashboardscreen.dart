@@ -359,7 +359,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
     const UsersScreen(),
 
-    const ClaimsScreen(),
+    // const ClaimsScreen(),
 
     const AnalyticsScreen(),
     const AIMatchScreen(),
@@ -371,7 +371,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     "Dashboard",
     "Manage Items",
     "Manage Users",
-    "Claims",
+    // "Claims",
     "Analytics",
     "AI Match Monitoring",
     "Broadcast Notification",

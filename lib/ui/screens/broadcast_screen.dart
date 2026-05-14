@@ -607,7 +607,9 @@ class _BroadcastScreenState
                           height: 55,
 
                           child:
-                          ElevatedButton.icon(
+                          Tooltip(
+                            message: "Send Notification to all Users",
+                              child: ElevatedButton.icon(
 
                             onPressed:
                             isSending
@@ -673,7 +675,7 @@ class _BroadcastScreenState
                                 FontWeight.bold,
                               ),
                             ),
-                          ),
+                          ),)
                         ),
                       ],
                     ),

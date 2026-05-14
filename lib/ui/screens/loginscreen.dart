@@ -476,6 +476,7 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   bool loading = false;
+  bool _obscurePassword = true;
 
   final _auth = FirebaseAuth.instance;
   final _db = FirebaseFirestore.instance;
@@ -713,13 +714,29 @@ class _LoginScreenState extends State<LoginScreen> {
                     // 🔒 PASSWORD FIELD
                     TextFormField(
                       controller: passwordController,
-                      obscureText: true,
+                      obscureText: _obscurePassword,
                       decoration: InputDecoration(
                         labelText: "Password",
                         prefixIcon: const Icon(
                           Icons.lock,
                           color: darkBlue,
                         ),
+
+                        // 👁️ TOGGLE ICON
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            _obscurePassword
+                                ? Icons.visibility_off
+                                : Icons.visibility,
+                            color: darkBlue,
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              _obscurePassword = !_obscurePassword;
+                            });
+                          },
+                        ),
+
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),

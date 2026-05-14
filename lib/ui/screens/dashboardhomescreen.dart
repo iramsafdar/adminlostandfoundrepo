@@ -936,6 +936,437 @@
 
 
 //```dart id="m4g8tf"
+// import 'package:cloud_firestore/cloud_firestore.dart';
+// import 'package:flutter/material.dart';
+//
+// import '../../services/dashboard_service.dart';
+// import '../../widgets/dashboardcard.dart';
+//
+// class DashboardHomeScreen extends StatelessWidget {
+// const DashboardHomeScreen({super.key});
+//
+// static const Color bgColor = Color(0xFFEFF5FB);
+//
+// @override
+// Widget build(BuildContext context) {
+//
+// final service = DashboardService();
+//
+// // ✅ OVERFLOW FIXES ADDED
+// // 1. LayoutBuilder
+// // 2. ConstrainedBox
+// // 3. Wrap instead of Row
+// // 4. Responsive card wrapping
+// // 5. Safe scrolling
+//
+// return LayoutBuilder(
+//
+// builder: (context, constraints) {
+//
+// return SingleChildScrollView(
+// padding: const EdgeInsets.all(25),
+//
+// child: ConstrainedBox(
+//
+// constraints: BoxConstraints(
+// minWidth: constraints.maxWidth,
+// ),
+//
+// child: Column(
+// crossAxisAlignment:
+// CrossAxisAlignment.start,
+//
+// children: [
+//
+// // 🔷 TITLE
+// // const Text(
+// // "Dashboard",
+// // style: TextStyle(
+// // fontSize: 32,
+// // fontWeight: FontWeight.bold,
+// // ),
+// // ),
+//
+// const SizedBox(height: 30),
+//
+// // 🔷 CARDS ROW 1
+// // ✅ CHANGED ROW → WRAP
+// Wrap(
+//
+// spacing: 20,
+// runSpacing: 20,
+//
+// children: [
+//
+// StreamBuilder<int>(
+// stream: service.getUsersCount(),
+//
+// builder: (context, snapshot) {
+//
+// return DashboardCard(
+// title: "Users",
+//
+// value:
+// (snapshot.data ?? 0)
+//     .toString(),
+//
+// icon: Icons.people,
+//
+// color: Colors.blue,
+// );
+// },
+// ),
+//
+// StreamBuilder<int>(
+// stream: service.getItemsCount(),
+//
+// builder: (context, snapshot) {
+//
+// return DashboardCard(
+//
+// title: "Items",
+//
+// value:
+// (snapshot.data ?? 0)
+//     .toString(),
+//
+// icon:
+// Icons.inventory_2,
+//
+// color: Colors.orange,
+// );
+// },
+// ),
+//
+// StreamBuilder<int>(
+// stream:
+// service.getClaimsCount(),
+//
+// builder: (context, snapshot) {
+//
+// return DashboardCard(
+//
+// title: "Claims",
+//
+// value:
+// (snapshot.data ?? 0)
+//     .toString(),
+//
+// icon:
+// Icons.assignment,
+//
+// color: Colors.purple,
+// );
+// },
+// ),
+// ],
+// ),
+//
+// const SizedBox(height: 20),
+//
+// // 🔷 CARDS ROW 2
+// // ✅ CHANGED ROW → WRAP
+// Wrap(
+//
+// spacing: 20,
+// runSpacing: 20,
+//
+// children: [
+//
+// StreamBuilder<int>(
+// stream:
+// service.getLostItemsCount(),
+//
+// builder: (context, snapshot) {
+//
+// return DashboardCard(
+//
+// title: "Lost Items",
+//
+// value:
+// (snapshot.data ?? 0)
+//     .toString(),
+//
+// icon:
+// Icons.search_off,
+//
+// color: Colors.red,
+// );
+// },
+// ),
+//
+// StreamBuilder<int>(
+// stream:
+// service.getFoundItemsCount(),
+//
+// builder: (context, snapshot) {
+//
+// return DashboardCard(
+//
+// title: "Found Items",
+//
+// value:
+// (snapshot.data ?? 0)
+//     .toString(),
+//
+// icon:
+// Icons.check_circle,
+//
+// color: Colors.green,
+// );
+// },
+// ),
+//
+// StreamBuilder<int>(
+// stream:
+// service.getPendingClaimsCount(),
+//
+// builder: (context, snapshot) {
+//
+// return DashboardCard(
+//
+// title:
+// "Pending Claims",
+//
+// value:
+// (snapshot.data ?? 0)
+//     .toString(),
+//
+// icon:
+// Icons.pending_actions,
+//
+// color: Colors.amber,
+// );
+// },
+// ),
+// ],
+// ),
+//
+// const SizedBox(height: 40),
+//
+// // 🔷 RECENT ACTIVITY TITLE
+// const Text(
+//
+// "Recent Activity",
+//
+// style: TextStyle(
+// fontSize: 24,
+// fontWeight: FontWeight.bold,
+// ),
+// ),
+//
+// const SizedBox(height: 20),
+//
+// // 🔷 LIVE ACTIVITY CONTAINER
+// Container(
+//
+// width: double.infinity,
+//
+// padding:
+// const EdgeInsets.all(20),
+//
+// decoration: BoxDecoration(
+//
+// color: Colors.white,
+//
+// borderRadius:
+// BorderRadius.circular(16),
+//
+// boxShadow: [
+//
+// BoxShadow(
+// color: Colors.black
+//     .withOpacity(0.05),
+//
+// blurRadius: 8,
+//
+// offset:
+// const Offset(0, 3),
+// ),
+// ],
+// ),
+//
+// child: StreamBuilder<QuerySnapshot>(
+//
+// stream: FirebaseFirestore
+//     .instance
+//     .collection('activity')
+//     .orderBy(
+// 'createdAt',
+// descending: true,
+// )
+//     .limit(10)
+//     .snapshots(),
+//
+// builder: (context, snapshot) {
+//
+// if (snapshot.connectionState ==
+// ConnectionState.waiting) {
+//
+// return const Center(
+// child:
+// CircularProgressIndicator(),
+// );
+// }
+//
+// if (!snapshot.hasData ||
+// snapshot.data!.docs.isEmpty) {
+//
+// return const Center(
+// child: Text(
+// "No recent activity",
+// ),
+// );
+// }
+//
+// final activities =
+// snapshot.data!.docs;
+//
+// return Column(
+//
+// children:
+// activities.map((doc) {
+//
+// final data =
+// doc.data()
+// as Map<String, dynamic>;
+//
+// final type =
+// data['type'] ?? '';
+//
+// IconData icon;
+// Color color;
+//
+// // 🔷 ICON + COLOR
+// switch (type) {
+//
+// case "user":
+// icon = Icons.person;
+// color = Colors.blue;
+// break;
+//
+// case "lost":
+// icon =
+// Icons.search_off;
+// color =
+// Colors.orange;
+// break;
+//
+// case "found":
+// icon =
+// Icons.check_circle;
+// color =
+// Colors.green;
+// break;
+//
+// case "claim":
+// icon =
+// Icons.assignment;
+// color =
+// Colors.purple;
+// break;
+//
+// case "approved":
+// icon =
+// Icons.verified;
+// color =
+// Colors.green;
+// break;
+//
+// case "rejected":
+// icon = Icons.cancel;
+// color = Colors.red;
+// break;
+//
+// default:
+// icon =
+// Icons.notifications;
+// color = Colors.grey;
+// }
+//
+// return Column(
+//
+// children: [
+//
+// ListTile(
+//
+// leading: CircleAvatar(
+//
+// backgroundColor:
+// color,
+//
+// child: Icon(
+//
+// icon,
+//
+// color:
+// Colors.white,
+// ),
+// ),
+//
+// title: Text(
+// data['title'] ??
+// '',
+// ),
+//
+// subtitle: Column(
+//
+// crossAxisAlignment:
+// CrossAxisAlignment
+//     .start,
+//
+// children: [
+//
+// Text(
+// data['subtitle'] ??
+// '',
+// ),
+//
+// const SizedBox(
+// height: 4),
+//
+// Text(
+//
+// data['createdAt'] !=
+// null
+// ? (data['createdAt']
+// as Timestamp)
+//     .toDate()
+//     .toString()
+//     .substring(
+// 0,
+// 16)
+//     : '',
+//
+// style:
+// const TextStyle(
+// fontSize: 11,
+// color:
+// Colors.grey,
+// ),
+// ),
+// ],
+// ),
+// ),
+//
+// const Divider(),
+// ],
+// );
+//
+// }).toList(),
+// );
+// },
+// ),
+// ),
+// ],
+// ),
+// ),
+// );
+// },
+// );
+// }
+// }
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
@@ -943,427 +1374,303 @@ import '../../services/dashboard_service.dart';
 import '../../widgets/dashboardcard.dart';
 
 class DashboardHomeScreen extends StatelessWidget {
-const DashboardHomeScreen({super.key});
-
-static const Color bgColor = Color(0xFFEFF5FB);
-
-@override
-Widget build(BuildContext context) {
-
-final service = DashboardService();
-
-// ✅ OVERFLOW FIXES ADDED
-// 1. LayoutBuilder
-// 2. ConstrainedBox
-// 3. Wrap instead of Row
-// 4. Responsive card wrapping
-// 5. Safe scrolling
-
-return LayoutBuilder(
-
-builder: (context, constraints) {
-
-return SingleChildScrollView(
-padding: const EdgeInsets.all(25),
-
-child: ConstrainedBox(
-
-constraints: BoxConstraints(
-minWidth: constraints.maxWidth,
-),
-
-child: Column(
-crossAxisAlignment:
-CrossAxisAlignment.start,
-
-children: [
-
-// 🔷 TITLE
-// const Text(
-// "Dashboard",
-// style: TextStyle(
-// fontSize: 32,
-// fontWeight: FontWeight.bold,
-// ),
-// ),
-
-const SizedBox(height: 30),
-
-// 🔷 CARDS ROW 1
-// ✅ CHANGED ROW → WRAP
-Wrap(
-
-spacing: 20,
-runSpacing: 20,
-
-children: [
-
-StreamBuilder<int>(
-stream: service.getUsersCount(),
-
-builder: (context, snapshot) {
-
-return DashboardCard(
-title: "Users",
-
-value:
-(snapshot.data ?? 0)
-    .toString(),
-
-icon: Icons.people,
-
-color: Colors.blue,
-);
-},
-),
-
-StreamBuilder<int>(
-stream: service.getItemsCount(),
-
-builder: (context, snapshot) {
-
-return DashboardCard(
-
-title: "Items",
-
-value:
-(snapshot.data ?? 0)
-    .toString(),
-
-icon:
-Icons.inventory_2,
-
-color: Colors.orange,
-);
-},
-),
-
-StreamBuilder<int>(
-stream:
-service.getClaimsCount(),
-
-builder: (context, snapshot) {
-
-return DashboardCard(
-
-title: "Claims",
-
-value:
-(snapshot.data ?? 0)
-    .toString(),
-
-icon:
-Icons.assignment,
-
-color: Colors.purple,
-);
-},
-),
-],
-),
-
-const SizedBox(height: 20),
-
-// 🔷 CARDS ROW 2
-// ✅ CHANGED ROW → WRAP
-Wrap(
-
-spacing: 20,
-runSpacing: 20,
-
-children: [
-
-StreamBuilder<int>(
-stream:
-service.getLostItemsCount(),
-
-builder: (context, snapshot) {
-
-return DashboardCard(
-
-title: "Lost Items",
-
-value:
-(snapshot.data ?? 0)
-    .toString(),
-
-icon:
-Icons.search_off,
-
-color: Colors.red,
-);
-},
-),
-
-StreamBuilder<int>(
-stream:
-service.getFoundItemsCount(),
-
-builder: (context, snapshot) {
-
-return DashboardCard(
-
-title: "Found Items",
-
-value:
-(snapshot.data ?? 0)
-    .toString(),
-
-icon:
-Icons.check_circle,
-
-color: Colors.green,
-);
-},
-),
-
-StreamBuilder<int>(
-stream:
-service.getPendingClaimsCount(),
-
-builder: (context, snapshot) {
-
-return DashboardCard(
-
-title:
-"Pending Claims",
-
-value:
-(snapshot.data ?? 0)
-    .toString(),
-
-icon:
-Icons.pending_actions,
-
-color: Colors.amber,
-);
-},
-),
-],
-),
-
-const SizedBox(height: 40),
-
-// 🔷 RECENT ACTIVITY TITLE
-const Text(
-
-"Recent Activity",
-
-style: TextStyle(
-fontSize: 24,
-fontWeight: FontWeight.bold,
-),
-),
-
-const SizedBox(height: 20),
-
-// 🔷 LIVE ACTIVITY CONTAINER
-Container(
-
-width: double.infinity,
-
-padding:
-const EdgeInsets.all(20),
-
-decoration: BoxDecoration(
-
-color: Colors.white,
-
-borderRadius:
-BorderRadius.circular(16),
-
-boxShadow: [
-
-BoxShadow(
-color: Colors.black
-    .withOpacity(0.05),
-
-blurRadius: 8,
-
-offset:
-const Offset(0, 3),
-),
-],
-),
-
-child: StreamBuilder<QuerySnapshot>(
-
-stream: FirebaseFirestore
-    .instance
-    .collection('activity')
-    .orderBy(
-'createdAt',
-descending: true,
-)
-    .limit(10)
-    .snapshots(),
-
-builder: (context, snapshot) {
-
-if (snapshot.connectionState ==
-ConnectionState.waiting) {
-
-return const Center(
-child:
-CircularProgressIndicator(),
-);
+  const DashboardHomeScreen({super.key});
+
+  static const Color bgColor = Color(0xFFEFF5FB);
+
+  @override
+  Widget build(BuildContext context) {
+
+    final service = DashboardService();
+
+    return LayoutBuilder(
+
+      builder: (context, constraints) {
+
+        return SingleChildScrollView(
+          padding: const EdgeInsets.all(25),
+
+          child: ConstrainedBox(
+
+            constraints: BoxConstraints(
+              minWidth: constraints.maxWidth,
+            ),
+
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+
+              children: [
+
+                const SizedBox(height: 30),
+
+                // =====================================================
+                // 🔷 DASHBOARD CARDS SECTION (FIXED LAYOUT)
+                // CHANGED: Wrap → GridView for proper row-like layout
+                // =====================================================
+
+                GridView(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+
+                  gridDelegate:
+                  const SliverGridDelegateWithMaxCrossAxisExtent(
+                    maxCrossAxisExtent: 380, // controls row behavior
+                    mainAxisSpacing: 20,
+                    crossAxisSpacing: 20,
+                    childAspectRatio: 2.5,
+                  ),
+
+                  children: [
+
+                    StreamBuilder<int>(
+                      stream: service.getUsersCount(),
+                      builder: (context, snapshot) {
+                        return DashboardCard(
+                          title: "Users",
+                          value: (snapshot.data ?? 0).toString(),
+                          icon: Icons.people,
+                          color: Colors.blue,
+                        );
+                      },
+                    ),
+
+                    StreamBuilder<int>(
+                      stream: service.getItemsCount(),
+                      builder: (context, snapshot) {
+                        return DashboardCard(
+                          title: "Items",
+                          value: (snapshot.data ?? 0).toString(),
+                          icon: Icons.inventory_2,
+                          color: Colors.orange,
+                        );
+                      },
+                    ),
+
+                    StreamBuilder<int>(
+                      stream: service.getClaimsCount(),
+                      builder: (context, snapshot) {
+                        return DashboardCard(
+                          title: "Claims",
+                          value: (snapshot.data ?? 0).toString(),
+                          icon: Icons.assignment,
+                          color: Colors.purple,
+                        );
+                      },
+                    ),
+
+                    StreamBuilder<int>(
+                      stream: service.getLostItemsCount(),
+                      builder: (context, snapshot) {
+                        return DashboardCard(
+                          title: "Lost Items",
+                          value: (snapshot.data ?? 0).toString(),
+                          icon: Icons.search_off,
+                          color: Colors.red,
+                        );
+                      },
+                    ),
+
+                    StreamBuilder<int>(
+                      stream: service.getFoundItemsCount(),
+                      builder: (context, snapshot) {
+                        return DashboardCard(
+                          title: "Found Items",
+                          value: (snapshot.data ?? 0).toString(),
+                          icon: Icons.check_circle,
+                          color: Colors.green,
+                        );
+                      },
+                    ),
+
+                    StreamBuilder<int>(
+                      stream: service.getPendingClaimsCount(),
+                      builder: (context, snapshot) {
+                        return DashboardCard(
+                          title: "Pending Claims",
+                          value: (snapshot.data ?? 0).toString(),
+                          icon: Icons.pending_actions,
+                          color: Colors.amber,
+                        );
+                      },
+                    ),
+                  ],
+                ),
+
+                const SizedBox(height: 40),
+
+                // =====================================================
+                // 🔷 RECENT ACTIVITY TITLE
+                // =====================================================
+
+                const Text(
+                  "Recent Activity",
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+
+                const SizedBox(height: 20),
+
+                // =====================================================
+                // 🔷 RECENT ACTIVITY CONTAINER (UNCHANGED)
+                // =====================================================
+
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(20),
+
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+
+                    borderRadius: BorderRadius.circular(16),
+
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.05),
+                        blurRadius: 8,
+                        offset: const Offset(0, 3),
+                      ),
+                    ],
+                  ),
+
+                  child: StreamBuilder<QuerySnapshot>(
+
+                    stream: FirebaseFirestore.instance
+                        .collection('activity')
+                        .orderBy('createdAt', descending: true)
+                        .limit(10)
+                        .snapshots(),
+
+                    builder: (context, snapshot) {
+
+                      if (snapshot.connectionState ==
+                          ConnectionState.waiting) {
+                        return const Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      }
+
+                      if (!snapshot.hasData ||
+                          snapshot.data!.docs.isEmpty) {
+                        return const Center(
+                          child: Text("No recent activity"),
+                        );
+                      }
+
+                      final activities = snapshot.data!.docs;
+
+                      return Column(
+
+                        children: activities.map((doc) {
+
+                          final data =
+                          doc.data() as Map<String, dynamic>;
+
+                          final type = data['type'] ?? '';
+
+                          IconData icon;
+                          Color color;
+
+                          // =====================================================
+                          // 🔷 ACTIVITY TYPE MAPPING
+                          // =====================================================
+
+                          switch (type) {
+
+                            case "user":
+                              icon = Icons.person;
+                              color = Colors.blue;
+                              break;
+
+                            case "lost":
+                              icon = Icons.search_off;
+                              color = Colors.orange;
+                              break;
+
+                            case "found":
+                              icon = Icons.check_circle;
+                              color = Colors.green;
+                              break;
+
+                            case "claim":
+                              icon = Icons.assignment;
+                              color = Colors.purple;
+                              break;
+
+                            case "approved":
+                              icon = Icons.verified;
+                              color = Colors.green;
+                              break;
+
+                            case "rejected":
+                              icon = Icons.cancel;
+                              color = Colors.red;
+                              break;
+
+                            default:
+                              icon = Icons.notifications;
+                              color = Colors.grey;
+                          }
+
+                          return Column(
+
+                            children: [
+
+                              ListTile(
+
+                                leading: CircleAvatar(
+                                  backgroundColor: color,
+                                  child: Icon(
+                                    icon,
+                                    color: Colors.white,
+                                  ),
+                                ),
+
+                                title: Text(data['title'] ?? ''),
+
+                                subtitle: Column(
+                                  crossAxisAlignment:
+                                  CrossAxisAlignment.start,
+
+                                  children: [
+
+                                    Text(data['subtitle'] ?? ''),
+
+                                    const SizedBox(height: 4),
+
+                                    Text(
+                                      data['createdAt'] != null
+                                          ? (data['createdAt']
+                                      as Timestamp)
+                                          .toDate()
+                                          .toString()
+                                          .substring(0, 16)
+                                          : '',
+
+                                      style: const TextStyle(
+                                        fontSize: 11,
+                                        color: Colors.grey,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+
+                              const Divider(),
+                            ],
+                          );
+
+                        }).toList(),
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
 }
-
-if (!snapshot.hasData ||
-snapshot.data!.docs.isEmpty) {
-
-return const Center(
-child: Text(
-"No recent activity",
-),
-);
-}
-
-final activities =
-snapshot.data!.docs;
-
-return Column(
-
-children:
-activities.map((doc) {
-
-final data =
-doc.data()
-as Map<String, dynamic>;
-
-final type =
-data['type'] ?? '';
-
-IconData icon;
-Color color;
-
-// 🔷 ICON + COLOR
-switch (type) {
-
-case "user":
-icon = Icons.person;
-color = Colors.blue;
-break;
-
-case "lost":
-icon =
-Icons.search_off;
-color =
-Colors.orange;
-break;
-
-case "found":
-icon =
-Icons.check_circle;
-color =
-Colors.green;
-break;
-
-case "claim":
-icon =
-Icons.assignment;
-color =
-Colors.purple;
-break;
-
-case "approved":
-icon =
-Icons.verified;
-color =
-Colors.green;
-break;
-
-case "rejected":
-icon = Icons.cancel;
-color = Colors.red;
-break;
-
-default:
-icon =
-Icons.notifications;
-color = Colors.grey;
-}
-
-return Column(
-
-children: [
-
-ListTile(
-
-leading: CircleAvatar(
-
-backgroundColor:
-color,
-
-child: Icon(
-
-icon,
-
-color:
-Colors.white,
-),
-),
-
-title: Text(
-data['title'] ??
-'',
-),
-
-subtitle: Column(
-
-crossAxisAlignment:
-CrossAxisAlignment
-    .start,
-
-children: [
-
-Text(
-data['subtitle'] ??
-'',
-),
-
-const SizedBox(
-height: 4),
-
-Text(
-
-data['createdAt'] !=
-null
-? (data['createdAt']
-as Timestamp)
-    .toDate()
-    .toString()
-    .substring(
-0,
-16)
-    : '',
-
-style:
-const TextStyle(
-fontSize: 11,
-color:
-Colors.grey,
-),
-),
-],
-),
-),
-
-const Divider(),
-],
-);
-
-}).toList(),
-);
-},
-),
-),
-],
-),
-),
-);
-},
-);
-}
-}
-

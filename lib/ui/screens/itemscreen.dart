@@ -6,6 +6,7 @@
 //
 
 //
+import 'package:adminpanellostandfound/widgets/topbar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
@@ -73,59 +74,59 @@ class _ItemsScreenState extends State<ItemsScreen> {
 
                   children: [
 
-                    const Text(
-                      "Manage Items",
-                      style: TextStyle(
-                        fontSize: 28,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    ElevatedButton.icon(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const DuplicateAlertsScreen(),
-                          ),
-                        );
-                      },
-                      icon: const Icon(Icons.warning),
-                      label: const Text("Duplicate Alerts"),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.redAccent,
-                      ),
-                    ),
+                    // const Text(
+                    //   "Manage Items",
+                    //   style: TextStyle(
+                    //     fontSize: 28,
+                    //     fontWeight: FontWeight.bold,
+                    //   ),
+                    // ),
+                    // ElevatedButton.icon(
+                    //   onPressed: () {
+                    //     Navigator.push(
+                    //       context,
+                    //       MaterialPageRoute(
+                    //         builder: (context) => const DuplicateAlertsScreen(),
+                    //       ),
+                    //     );
+                    //   },
+                    //   icon: const Icon(Icons.warning),
+                    //   label: const Text("Duplicate Alerts"),
+                    //   style: ElevatedButton.styleFrom(
+                    //     backgroundColor: Colors.redAccent,
+                    //   ),
+                    // ),
 
-                    ElevatedButton.icon(
-                      onPressed: () {},
-
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor:
-                        ItemsScreen.orange,
-
-                        padding:
-                        const EdgeInsets.symmetric(
-                          horizontal: 18,
-                          vertical: 14,
-                        ),
-
-                        shape: RoundedRectangleBorder(
-                          borderRadius:
-                          BorderRadius.circular(12),
-                        ),
-                      ),
-
-                      icon: const Icon(
-                        Icons.add,
-                        color: Colors.white,
-                      ),
-
-                      label: const Text(
-                        "Add Item",
-                        style:
-                        TextStyle(color: Colors.white),
-                      ),
-                    ),
+                    // ElevatedButton.icon(
+                    //   onPressed: () {},
+                    //
+                    //   style: ElevatedButton.styleFrom(
+                    //     backgroundColor:
+                    //     ItemsScreen.orange,
+                    //
+                    //     padding:
+                    //     const EdgeInsets.symmetric(
+                    //       horizontal: 18,
+                    //       vertical: 14,
+                    //     ),
+                    //
+                    //     shape: RoundedRectangleBorder(
+                    //       borderRadius:
+                    //       BorderRadius.circular(12),
+                    //     ),
+                    //   ),
+                    //
+                    //   icon: const Icon(
+                    //     Icons.add,
+                    //     color: Colors.white,
+                    //   ),
+                    //
+                    //   label: const Text(
+                    //     "Add Item",
+                    //     style:
+                    //     TextStyle(color: Colors.white),
+                    //   ),
+                    // ),
                   ],
                 ),
 
@@ -398,6 +399,119 @@ class _ItemsScreenState extends State<ItemsScreen> {
                           },
                         ),
                       ),
+                      const SizedBox(width: 10),
+                       Container(
+                         width: 140,
+                         height: 43,
+                         child:  StreamBuilder<QuerySnapshot>(
+                           stream: FirebaseFirestore.instance
+                               .collection("duplicate_alerts")
+                               .where("status", isEqualTo: "pending")
+                               .snapshots(),
+
+                           builder: (context, snapshot) {
+
+                             final pendingCount =
+                                 snapshot.data?.docs.length ?? 0;
+
+                             return Stack(
+                               clipBehavior: Clip.none,
+
+                               children: [
+
+                                 ElevatedButton.icon(
+                                   onPressed: () {
+                                     Navigator.push(
+                                       context,
+
+                                       MaterialPageRoute(
+                                         builder: (context) =>
+                                         const DuplicateAlertsScreen(),
+                                       ),
+                                     );
+                                   },
+
+                                   icon: const Icon(Icons.warning, color:  ItemsScreen.bgColor,),
+
+                                   label: const Text("Duplicates", style:  TextStyle(color:ItemsScreen.bgColor),),
+
+                                   style: ElevatedButton.styleFrom(
+                                     backgroundColor:  Colors.red,
+                                   ),
+                                 ),
+
+                                 // BADGE
+                                 if (pendingCount > 0)
+                                   Positioned(
+                                     right: -8,
+                                     top: -8,
+
+                                     child: Container(
+                                       padding: const EdgeInsets.all(7),
+
+                                       decoration: const BoxDecoration(
+                                         color: Colors.white,
+                                         shape: BoxShape.circle,
+                                       ),
+
+                                       child: Container(
+                                         padding: const EdgeInsets.symmetric(
+                                           horizontal: 7,
+                                           vertical: 3,
+                                         ),
+
+                                         decoration: const BoxDecoration(
+                                           color: Colors.red,
+                                           shape: BoxShape.circle,
+                                         ),
+
+                                         child: Text(
+                                           pendingCount.toString(),
+
+                                           style: const TextStyle(
+                                             color: Colors.white,
+                                             fontSize: 11,
+                                             fontWeight: FontWeight.bold,
+                                           ),
+                                         ),
+                                       ),
+                                     ),
+                                   ),
+                               ],
+                             );
+                           },
+                         ),
+                         // ElevatedButton.icon(
+                         //   onPressed: () {},
+                         //
+                         //   style: ElevatedButton.styleFrom(
+                         //     backgroundColor:
+                         //     ItemsScreen.orange,
+                         //
+                         //     padding:
+                         //     const EdgeInsets.symmetric(
+                         //       horizontal: 18,
+                         //       vertical: 14,
+                         //     ),
+                         //
+                         //     shape: RoundedRectangleBorder(
+                         //       borderRadius:
+                         //       BorderRadius.circular(12),
+                         //     ),
+                         //   ),
+                         //
+                         //   icon: const Icon(
+                         //     Icons.add,
+                         //     color: Colors.white,
+                         //   ),
+                         //
+                         //   label: const Text(
+                         //     "Add Item",
+                         //     style:
+                         //     TextStyle(color: Colors.white),
+                         //   ),
+                         // ),
+                       )
                     ],
                   ),
                 ),
@@ -777,7 +891,7 @@ class _ItemsScreenState extends State<ItemsScreen> {
 
                                         icon: const Icon(
                                           Icons.visibility,
-                                          color: Colors.blue,
+                                          color: ItemsScreen.darkBlue,
                                         ),
                                       ),
 

@@ -1383,6 +1383,7 @@
 //       backgroundColor: bgColor,
 //
 //       appBar: AppBar(
+//         iconTheme: const IconThemeData(color: Color(0xFFEFF5FB)),
 //         elevation: 0,
 //         backgroundColor: darkBlue,
 //         title: const Text(
@@ -1949,97 +1950,140 @@
 //
 //                                 children: [
 //
-//                                   ElevatedButton.icon(
-//                                     onPressed: () async {
+//                                    Tooltip(
+//                                      message: "Confirm Duplicate",
+//                                      child:ElevatedButton.icon(
+//                                        onPressed: () async {
 //
-//                                       await FirebaseFirestore
-//                                           .instance
-//                                           .collection(
-//                                           "duplicate_alerts")
-//                                           .doc(alertId)
-//                                           .update({
-//                                         "status":
-//                                         "confirmed"
-//                                       });
+//                                          final confirm = await showDialog(
+//                                            context: context,
 //
-//                                       Navigator.pop(
-//                                           context);
-//                                     },
+//                                            builder: (context) {
+//                                              return AlertDialog(
 //
-//                                     icon: const Icon(
-//                                         Icons.check),
+//                                                title: const Text(
+//                                                  "Confirm Duplicate",
+//                                                ),
 //
-//                                     label: const Text(
-//                                         "Confirm"),
+//                                                content: const Text(
+//                                                  "If you confirm this duplicate alert, the item will be removed from the Items list and Home screen.\n\nAre you sure you want to continue?",
+//                                                ),
 //
-//                                     style:
-//                                     ElevatedButton
-//                                         .styleFrom(
-//                                       backgroundColor:
-//                                       Colors.green,
+//                                                shape: RoundedRectangleBorder(
+//                                                  borderRadius: BorderRadius.circular(14),
+//                                                ),
 //
-//                                       padding:
-//                                       const EdgeInsets
-//                                           .symmetric(
-//                                         horizontal: 22,
-//                                         vertical: 16,
-//                                       ),
+//                                                actions: [
 //
-//                                       shape:
-//                                       RoundedRectangleBorder(
-//                                         borderRadius:
-//                                         BorderRadius
-//                                             .circular(
-//                                             12),
-//                                       ),
-//                                     ),
-//                                   ),
+//                                                  TextButton(
+//                                                    onPressed: () {
+//                                                      Navigator.pop(context, false);
+//                                                    },
+//
+//                                                    child: const Text(
+//                                                      "Cancel",
+//                                                    ),
+//                                                  ),
+//
+//                                                  ElevatedButton(
+//                                                    onPressed: () {
+//                                                      Navigator.pop(context, true);
+//                                                    },
+//
+//                                                    style: ElevatedButton.styleFrom(
+//                                                      backgroundColor: Colors.green,
+//                                                    ),
+//
+//                                                    child: const Text(
+//                                                      "Confirm",
+//                                                    ),
+//                                                  ),
+//                                                ],
+//                                              );
+//                                            },
+//                                          );
+//
+//                                          if (confirm == true) {
+//
+//                                            await FirebaseFirestore.instance
+//                                                .collection("duplicate_alerts")
+//                                                .doc(alertId)
+//                                                .update({
+//                                              "status": "confirmed"
+//                                            });
+//
+//                                            Navigator.pop(context);
+//                                          }
+//                                        },
+//
+//                                        icon: const Icon(Icons.check),
+//
+//                                        label: const Text("Confirm"),
+//
+//                                        style: ElevatedButton.styleFrom(
+//                                          backgroundColor: Colors.green,
+//
+//                                          padding: const EdgeInsets.symmetric(
+//                                            horizontal: 22,
+//                                            vertical: 16,
+//                                          ),
+//
+//                                          shape: RoundedRectangleBorder(
+//                                            borderRadius: BorderRadius.circular(12),
+//                                          ),
+//                                        ),
+//                                      ),
+//                                    ),
 //
 //                                   const SizedBox(
 //                                       width: 12),
 //
-//                                   ElevatedButton.icon(
-//                                     onPressed: () async {
+//                                   Tooltip(
+//                                     message: "Ignore Duplicate Alert",
+//                                     child:  ElevatedButton.icon(
 //
-//                                       await FirebaseFirestore
-//                                           .instance
-//                                           .collection(
-//                                           "duplicate_alerts")
-//                                           .doc(alertId)
-//                                           .delete();
+//                                       onPressed: () async {
 //
-//                                       Navigator.pop(
-//                                           context);
-//                                     },
+//                                         await FirebaseFirestore
+//                                             .instance
+//                                             .collection(
+//                                             "duplicate_alerts")
+//                                             .doc(alertId)
+//                                             .delete();
 //
-//                                     icon: const Icon(
-//                                         Icons.close),
+//                                         Navigator.pop(
+//                                             context);
+//                                       },
 //
-//                                     label:
-//                                     const Text("Ignore"),
+//                                       icon: const Icon(
+//                                           Icons.close),
 //
-//                                     style:
-//                                     ElevatedButton
-//                                         .styleFrom(
-//                                       backgroundColor:
-//                                       Colors.grey,
+//                                       label:
+//                                       const Text("Ignore"),
 //
-//                                       padding:
-//                                       const EdgeInsets
-//                                           .symmetric(
-//                                         horizontal: 22,
-//                                         vertical: 16,
-//                                       ),
+//                                       style:
+//                                       ElevatedButton
+//                                           .styleFrom(
+//                                         backgroundColor:
+//                                         Colors.grey,
 //
-//                                       shape:
-//                                       RoundedRectangleBorder(
-//                                         borderRadius:
-//                                         BorderRadius
-//                                             .circular(
-//                                             12),
+//                                         padding:
+//                                         const EdgeInsets
+//                                             .symmetric(
+//                                           horizontal: 22,
+//                                           vertical: 16,
+//                                         ),
+//
+//                                         shape:
+//                                         RoundedRectangleBorder(
+//                                           borderRadius:
+//                                           BorderRadius
+//                                               .circular(
+//                                               12),
+//                                         ),
 //                                       ),
 //                                     ),
-//                                   ),
+//                                   )
 //                                 ],
 //                               ),
 //                             ],
@@ -3861,6 +3905,918 @@
 // }
 
 
+// import 'package:cloud_firestore/cloud_firestore.dart';
+// import 'package:flutter/material.dart';
+//
+// class DuplicateAlertsScreen extends StatelessWidget {
+//   const DuplicateAlertsScreen({super.key});
+//
+//   static const Color darkBlue = Color(0xFF2A417F);
+//   static const Color orange = Color(0xFFF09E27);
+//   static const Color bgColor = Color(0xFFEFF5FB);
+//
+//   @override
+//   Widget build(BuildContext context) {
+//
+//     final alertsRef =
+//     FirebaseFirestore.instance
+//         .collection("duplicate_alerts");
+//
+//     return Container(
+//       color: bgColor,
+//
+//       child: Padding(
+//         padding: const EdgeInsets.all(25),
+//
+//         child: Container(
+//           width: double.infinity,
+//           padding: const EdgeInsets.all(20),
+//
+//           decoration: BoxDecoration(
+//             color: Colors.white,
+//
+//             borderRadius:
+//             BorderRadius.circular(18),
+//
+//             boxShadow: [
+//               BoxShadow(
+//                 color:
+//                 Colors.black.withOpacity(0.05),
+//
+//                 blurRadius: 10,
+//
+//                 offset: const Offset(0, 4),
+//               ),
+//             ],
+//           ),
+//
+//           child: StreamBuilder<QuerySnapshot>(
+//
+//             stream: alertsRef
+//                 .where(
+//               "status",
+//               isEqualTo: "pending",
+//             )
+//                 .orderBy(
+//               "createdAt",
+//               descending: true,
+//             )
+//                 .snapshots(),
+//
+//             builder: (context, snapshot) {
+//
+//               // 🔷 ERROR
+//               if (snapshot.hasError) {
+//
+//                 return Center(
+//                   child: Text(
+//                     "Error: ${snapshot.error}",
+//                   ),
+//                 );
+//               }
+//
+//               // 🔷 LOADING
+//               if (snapshot.connectionState ==
+//                   ConnectionState.waiting) {
+//
+//                 return const Center(
+//                   child:
+//                   CircularProgressIndicator(),
+//                 );
+//               }
+//
+//               final docs =
+//                   snapshot.data?.docs ?? [];
+//
+//               // 🔷 EMPTY
+//               if (docs.isEmpty) {
+//
+//                 return const Center(
+//                   child: Padding(
+//                     padding: EdgeInsets.all(40),
+//
+//                     child: Text(
+//                       "No duplicate alerts found",
+//
+//                       style: TextStyle(
+//                         fontSize: 16,
+//                       ),
+//                     ),
+//                   ),
+//                 );
+//               }
+//
+//               return Column(
+//                 crossAxisAlignment:
+//                 CrossAxisAlignment.start,
+//
+//                 children: [
+//
+//                   // 🔷 HEADER
+//                   Row(
+//                     mainAxisAlignment:
+//                     MainAxisAlignment
+//                         .spaceBetween,
+//
+//                     children: [
+//
+//                       const Text(
+//                         "Potential Duplicate Items",
+//
+//                         style: TextStyle(
+//                           fontSize: 22,
+//                           fontWeight:
+//                           FontWeight.bold,
+//                         ),
+//                       ),
+//
+//                       Container(
+//                         padding:
+//                         const EdgeInsets
+//                             .symmetric(
+//                           horizontal: 16,
+//                           vertical: 10,
+//                         ),
+//
+//                         decoration: BoxDecoration(
+//                           color: Colors.red
+//                               .withOpacity(0.1),
+//
+//                           borderRadius:
+//                           BorderRadius
+//                               .circular(12),
+//                         ),
+//
+//                         child: Text(
+//                           "${docs.length} Pending",
+//
+//                           style:
+//                           const TextStyle(
+//                             color: Colors.red,
+//                             fontWeight:
+//                             FontWeight.bold,
+//                           ),
+//                         ),
+//                       ),
+//                     ],
+//                   ),
+//
+//                   const SizedBox(height: 25),
+//
+//                   // ✅ FIXED TABLE
+//                   SizedBox(
+//                     height: 500,
+//
+//                     child:
+//                     SingleChildScrollView(
+//                       scrollDirection:
+//                       Axis.horizontal,
+//
+//                       child: DataTable(
+//
+//                         columnSpacing: 50,
+//
+//                         headingRowHeight: 60,
+//
+//                         dataRowMinHeight: 90,
+//
+//                         dataRowMaxHeight: 100,
+//
+//                         headingRowColor:
+//                         MaterialStateProperty
+//                             .all(bgColor),
+//
+//                         border: TableBorder(
+//                           horizontalInside:
+//                           BorderSide(
+//                             color: Colors.grey
+//                                 .withOpacity(
+//                                 0.2),
+//                           ),
+//                         ),
+//
+//                         columns: const [
+//
+//                           // 🔷 ITEM
+//                           DataColumn(
+//                             label: Text(
+//                               "Item Name",
+//
+//                               style: TextStyle(
+//                                 fontWeight:
+//                                 FontWeight
+//                                     .bold,
+//                               ),
+//                             ),
+//                           ),
+//
+//                           // 🔷 SIMILARITY
+//                           DataColumn(
+//                             label: Text(
+//                               "Similarity",
+//
+//                               style: TextStyle(
+//                                 fontWeight:
+//                                 FontWeight
+//                                     .bold,
+//                               ),
+//                             ),
+//                           ),
+//
+//                           // 🔷 DATE
+//                           DataColumn(
+//                             label: Text(
+//                               "Detected On",
+//
+//                               style: TextStyle(
+//                                 fontWeight:
+//                                 FontWeight
+//                                     .bold,
+//                               ),
+//                             ),
+//                           ),
+//
+//                           // 🔷 ACTIONS
+//                           DataColumn(
+//                             label: Text(
+//                               "Actions",
+//
+//                               style: TextStyle(
+//                                 fontWeight:
+//                                 FontWeight
+//                                     .bold,
+//                               ),
+//                             ),
+//                           ),
+//                         ],
+//
+//                         rows:
+//                         docs.map((doc) {
+//
+//                           final data =
+//                           doc.data()
+//                           as Map<String,
+//                               dynamic>;
+//
+//                           final similarity =
+//                           ((data[
+//                           "similarity"] ??
+//                               0.0) *
+//                               100)
+//                               .toStringAsFixed(
+//                               0);
+//
+//                           final timestamp =
+//                           data["createdAt"]
+//                           as Timestamp?;
+//
+//                           final date =
+//                           timestamp != null
+//                               ? "${timestamp.toDate().day}/${timestamp.toDate().month}/${timestamp.toDate().year}"
+//                               : "N/A";
+//
+//                           return DataRow(
+//                             cells: [
+//
+//                               // 🔷 ITEM CELL
+//                               DataCell(
+//                                 SizedBox(
+//                                   width: 320,
+//
+//                                   child: Row(
+//                                     children: [
+//
+//                                       // IMAGE
+//                                       Container(
+//                                         width: 50,
+//                                         height: 50,
+//
+//                                         decoration:
+//                                         BoxDecoration(
+//                                           borderRadius:
+//                                           BorderRadius
+//                                               .circular(
+//                                               10),
+//
+//                                           image: data[
+//                                           "duplicateImageUrl"] !=
+//                                               null
+//                                               ? DecorationImage(
+//                                             image:
+//                                             NetworkImage(
+//                                               data[
+//                                               "duplicateImageUrl"],
+//                                             ),
+//
+//                                             fit: BoxFit
+//                                                 .cover,
+//                                           )
+//                                               : null,
+//
+//                                           color: Colors
+//                                               .black12,
+//                                         ),
+//
+//                                         child: data[
+//                                         "duplicateImageUrl"] ==
+//                                             null
+//                                             ? const Icon(
+//                                           Icons
+//                                               .inventory_2,
+//                                         )
+//                                             : null,
+//                                       ),
+//
+//                                       const SizedBox(
+//                                           width:
+//                                           14),
+//
+//                                       // NAME
+//                                       Expanded(
+//                                         child: Text(
+//                                           data["itemName"] ??
+//                                               "Unknown Item",
+//
+//                                           overflow:
+//                                           TextOverflow
+//                                               .ellipsis,
+//
+//                                           style:
+//                                           const TextStyle(
+//                                             fontWeight:
+//                                             FontWeight
+//                                                 .bold,
+//
+//                                             fontSize:
+//                                             15,
+//                                           ),
+//                                         ),
+//                                       ),
+//                                     ],
+//                                   ),
+//                                 ),
+//                               ),
+//
+//                               // 🔷 SIMILARITY
+//                               DataCell(
+//                                 Container(
+//                                   padding:
+//                                   const EdgeInsets
+//                                       .symmetric(
+//                                     horizontal:
+//                                     16,
+//                                     vertical: 8,
+//                                   ),
+//
+//                                   decoration:
+//                                   BoxDecoration(
+//                                     color: Colors
+//                                         .red
+//                                         .withOpacity(
+//                                         0.12),
+//
+//                                     borderRadius:
+//                                     BorderRadius
+//                                         .circular(
+//                                         20),
+//                                   ),
+//
+//                                   child: Text(
+//                                     "$similarity%",
+//
+//                                     style:
+//                                     const TextStyle(
+//                                       color:
+//                                       Colors.red,
+//
+//                                       fontWeight:
+//                                       FontWeight
+//                                           .bold,
+//                                     ),
+//                                   ),
+//                                 ),
+//                               ),
+//
+//                               // 🔷 DATE
+//                               DataCell(
+//                                 Text(
+//                                   date,
+//
+//                                   style:
+//                                   const TextStyle(
+//                                     fontWeight:
+//                                     FontWeight
+//                                         .w500,
+//                                   ),
+//                                 ),
+//                               ),
+//
+//                               // 🔷 ACTIONS
+//                               DataCell(
+//
+//                                 IconButton(
+//                                   tooltip:
+//                                   "View Details",
+//
+//                                   icon:
+//                                   const Icon(
+//                                     Icons
+//                                         .visibility,
+//
+//                                     color:
+//                                     Colors.blue,
+//                                   ),
+//
+//                                   onPressed: () {
+//
+//                                     _openDetails(
+//                                       context,
+//                                       doc.id,
+//                                       data,
+//                                     );
+//                                   },
+//                                 ),
+//                               ),
+//                             ],
+//                           );
+//                         }).toList(),
+//                       ),
+//                     ),
+//                   ),
+//                 ],
+//               );
+//             },
+//           ),
+//         ),
+//       ),
+//     );
+//   }
+//
+//   // 🔷 OPEN DETAILS
+//   void _openDetails(
+//       BuildContext context,
+//       String alertId,
+//       Map<String, dynamic> data,
+//       ) {
+//
+//     showModalBottomSheet(
+//
+//       context: context,
+//
+//       isScrollControlled: true,
+//
+//       backgroundColor: Colors.transparent,
+//
+//       builder: (_) {
+//
+//         return DraggableScrollableSheet(
+//
+//           initialChildSize: 0.92,
+//
+//           minChildSize: 0.6,
+//
+//           maxChildSize: 0.95,
+//
+//           builder: (context, scrollController) {
+//
+//             return Container(
+//
+//               decoration: const BoxDecoration(
+//                 color: bgColor,
+//
+//                 borderRadius: BorderRadius.vertical(
+//                   top: Radius.circular(24),
+//                 ),
+//               ),
+//
+//               child: FutureBuilder<
+//                   List<DocumentSnapshot>>(
+//
+//                 future: Future.wait([
+//
+//                   FirebaseFirestore.instance
+//                       .collection("items")
+//                       .doc(data["itemId"])
+//                       .get(),
+//
+//                   FirebaseFirestore.instance
+//                       .collection("items")
+//                       .doc(data["duplicateItemId"])
+//                       .get(),
+//                 ]),
+//
+//                 builder: (context, snapshot) {
+//
+//                   // 🔷 LOADING
+//                   if (snapshot.connectionState ==
+//                       ConnectionState.waiting) {
+//
+//                     return const Center(
+//                       child:
+//                       CircularProgressIndicator(),
+//                     );
+//                   }
+//
+//                   // 🔷 ERROR
+//                   if (snapshot.hasError) {
+//
+//                     return Center(
+//                       child: Text(
+//                         "Error: ${snapshot.error}",
+//                       ),
+//                     );
+//                   }
+//
+//                   if (!snapshot.hasData) {
+//
+//                     return const Center(
+//                       child: Text(
+//                         "No data found",
+//                       ),
+//                     );
+//                   }
+//
+//                   final docs = snapshot.data!;
+//
+//                   final original =
+//                       docs[0].data()
+//                       as Map<String, dynamic>? ??
+//                           {};
+//
+//                   final duplicate =
+//                       docs[1].data()
+//                       as Map<String, dynamic>? ??
+//                           {};
+//
+//                   return Column(
+//                     children: [
+//
+//                       // 🔷 HEADER
+//                       Container(
+//                         padding:
+//                         const EdgeInsets.all(20),
+//
+//                         decoration:
+//                         const BoxDecoration(
+//                           color: Colors.white,
+//
+//                           borderRadius:
+//                           BorderRadius.vertical(
+//                             top:
+//                             Radius.circular(24),
+//                           ),
+//                         ),
+//
+//                         child: Row(
+//                           mainAxisAlignment:
+//                           MainAxisAlignment
+//                               .spaceBetween,
+//
+//                           children: [
+//
+//                             const Text(
+//                               "Duplicate Review",
+//
+//                               style: TextStyle(
+//                                 fontSize: 20,
+//                                 fontWeight:
+//                                 FontWeight.bold,
+//                               ),
+//                             ),
+//
+//                             IconButton(
+//                               icon:
+//                               const Icon(Icons.close),
+//
+//                               onPressed: () {
+//                                 Navigator.pop(context);
+//                               },
+//                             ),
+//                           ],
+//                         ),
+//                       ),
+//
+//                       // 🔷 CONTENT
+//                       Expanded(
+//                         child: SingleChildScrollView(
+//                           controller: scrollController,
+//
+//                           padding:
+//                           const EdgeInsets.all(20),
+//
+//                           child: Column(
+//                             children: [
+//
+//                               Row(
+//                                 crossAxisAlignment:
+//                                 CrossAxisAlignment
+//                                     .start,
+//
+//                                 children: [
+//
+//                                   // 🔷 ORIGINAL ITEM
+//                                   Expanded(
+//                                     child: _itemCard(
+//                                       "Original Item",
+//                                       original,
+//                                       Colors.green,
+//                                     ),
+//                                   ),
+//
+//                                   const SizedBox(
+//                                       width: 20),
+//
+//                                   // 🔷 DUPLICATE ITEM
+//                                   Expanded(
+//                                     child: _itemCard(
+//                                       "Duplicate Item",
+//                                       duplicate,
+//                                       Colors.blue,
+//                                     ),
+//                                   ),
+//                                 ],
+//                               ),
+//
+//                               const SizedBox(
+//                                   height: 30),
+//
+//                               // 🔷 ACTION BUTTONS
+//                               Row(
+//                                 mainAxisAlignment:
+//                                 MainAxisAlignment.end,
+//
+//                                 children: [
+//
+//                                   // ✅ CONFIRM
+//                                   ElevatedButton.icon(
+//
+//                                     onPressed: () async {
+//
+//                                       await FirebaseFirestore
+//                                           .instance
+//                                           .collection(
+//                                           "duplicate_alerts")
+//                                           .doc(alertId)
+//                                           .update({
+//                                         "status":
+//                                         "confirmed",
+//                                       });
+//
+//                                       Navigator.pop(
+//                                           context);
+//                                     },
+//
+//                                     icon: const Icon(
+//                                         Icons.check),
+//
+//                                     label:
+//                                     const Text("Confirm"),
+//
+//                                     style:
+//                                     ElevatedButton
+//                                         .styleFrom(
+//
+//                                       backgroundColor:
+//                                       Colors.green,
+//
+//                                       foregroundColor:
+//                                       Colors.white,
+//
+//                                       padding:
+//                                       const EdgeInsets
+//                                           .symmetric(
+//                                         horizontal: 22,
+//                                         vertical: 16,
+//                                       ),
+//
+//                                       shape:
+//                                       RoundedRectangleBorder(
+//                                         borderRadius:
+//                                         BorderRadius
+//                                             .circular(
+//                                             12),
+//                                       ),
+//                                     ),
+//                                   ),
+//
+//                                   const SizedBox(
+//                                       width: 12),
+//
+//                                   // ❌ IGNORE
+//                                   ElevatedButton.icon(
+//
+//                                     onPressed: () async {
+//
+//                                       await FirebaseFirestore
+//                                           .instance
+//                                           .collection(
+//                                           "duplicate_alerts")
+//                                           .doc(alertId)
+//                                           .delete();
+//
+//                                       Navigator.pop(
+//                                           context);
+//                                     },
+//
+//                                     icon: const Icon(
+//                                         Icons.close),
+//
+//                                     label:
+//                                     const Text("Ignore"),
+//
+//                                     style:
+//                                     ElevatedButton
+//                                         .styleFrom(
+//
+//                                       backgroundColor:
+//                                       Colors.grey,
+//
+//                                       foregroundColor:
+//                                       Colors.white,
+//
+//                                       padding:
+//                                       const EdgeInsets
+//                                           .symmetric(
+//                                         horizontal: 22,
+//                                         vertical: 16,
+//                                       ),
+//
+//                                       shape:
+//                                       RoundedRectangleBorder(
+//                                         borderRadius:
+//                                         BorderRadius
+//                                             .circular(
+//                                             12),
+//                                       ),
+//                                     ),
+//                                   ),
+//                                 ],
+//                               ),
+//                             ],
+//                           ),
+//                         ),
+//                       ),
+//                     ],
+//                   );
+//                 },
+//               ),
+//             );
+//           },
+//         );
+//       },
+//     );
+//   }
+//
+//   // 🔷 ITEM CARD
+//   Widget _itemCard(
+//       String title,
+//       Map<String, dynamic> item,
+//       Color color,
+//       ) {
+//
+//     return Container(
+//       padding: const EdgeInsets.all(18),
+//
+//       decoration: BoxDecoration(
+//         color: Colors.white,
+//
+//         borderRadius:
+//         BorderRadius.circular(18),
+//
+//         boxShadow: [
+//           BoxShadow(
+//             color:
+//             Colors.black.withOpacity(0.05),
+//
+//             blurRadius: 8,
+//           ),
+//         ],
+//       ),
+//
+//       child: Column(
+//         crossAxisAlignment:
+//         CrossAxisAlignment.start,
+//
+//         children: [
+//
+//           // 🔷 TITLE
+//           Container(
+//             padding:
+//             const EdgeInsets.symmetric(
+//               horizontal: 14,
+//               vertical: 10,
+//             ),
+//
+//             decoration: BoxDecoration(
+//               color: color.withOpacity(0.1),
+//
+//               borderRadius:
+//               BorderRadius.circular(12),
+//             ),
+//
+//             child: Row(
+//               children: [
+//
+//                 Icon(
+//                   Icons.verified,
+//                   color: color,
+//                   size: 20,
+//                 ),
+//
+//                 const SizedBox(width: 10),
+//
+//                 Text(
+//                   title,
+//
+//                   style: TextStyle(
+//                     color: color,
+//                     fontWeight:
+//                     FontWeight.bold,
+//                     fontSize: 16,
+//                   ),
+//                 ),
+//               ],
+//             ),
+//           ),
+//
+//           const SizedBox(height: 18),
+//
+//           // 🔷 IMAGE
+//           if (item["imageUrl"] != null)
+//             ClipRRect(
+//               borderRadius:
+//               BorderRadius.circular(14),
+//
+//               child: Image.network(
+//                 item["imageUrl"],
+//
+//                 height: 220,
+//                 width: double.infinity,
+//
+//                 fit: BoxFit.cover,
+//               ),
+//             ),
+//
+//           const SizedBox(height: 18),
+//
+//           // 🔷 NAME
+//           Text(
+//             item["itemName"] ?? "N/A",
+//
+//             style: const TextStyle(
+//               fontSize: 20,
+//               fontWeight:
+//               FontWeight.bold,
+//             ),
+//           ),
+//
+//           const SizedBox(height: 10),
+//
+//           // 🔷 DESCRIPTION
+//           Text(
+//             item["description"] ??
+//                 "No description",
+//
+//             style: TextStyle(
+//               color: Colors.grey[700],
+//               height: 1.5,
+//             ),
+//           ),
+//
+//           const SizedBox(height: 14),
+//
+//           // 🔷 LOCATION
+//           Row(
+//             children: [
+//
+//               const Icon(
+//                 Icons.location_on,
+//                 size: 18,
+//                 color: Colors.grey,
+//               ),
+//
+//               const SizedBox(width: 6),
+//
+//               Expanded(
+//                 child: Text(
+//                   item["location"] ?? "N/A",
+//
+//                   style: TextStyle(
+//                     color: Colors.grey[700],
+//                   ),
+//                 ),
+//               ),
+//             ],
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+// }
+
+
+
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
@@ -3874,14 +4830,33 @@ class DuplicateAlertsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    final alertsRef =
-    FirebaseFirestore.instance
-        .collection("duplicate_alerts");
+    final pendingAlertsRef =
+    FirebaseFirestore.instance.collection("duplicate_alerts");
 
-    return Container(
-      color: bgColor,
+    final confirmedAlertsRef =
+    FirebaseFirestore.instance.collection("duplicate_alerts");
 
-      child: Padding(
+    return Scaffold(
+      backgroundColor: bgColor,
+
+      appBar: AppBar(
+        iconTheme: const IconThemeData(
+          color: Color(0xFFEFF5FB),
+        ),
+
+        elevation: 0,
+        backgroundColor: darkBlue,
+
+        title: const Text(
+          "Duplicate Alerts",
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+        ),
+      ),
+
+      body: Padding(
         padding: const EdgeInsets.all(25),
 
         child: Container(
@@ -3891,424 +4866,894 @@ class DuplicateAlertsScreen extends StatelessWidget {
           decoration: BoxDecoration(
             color: Colors.white,
 
-            borderRadius:
-            BorderRadius.circular(18),
+            borderRadius: BorderRadius.circular(18),
 
             boxShadow: [
               BoxShadow(
-                color:
-                Colors.black.withOpacity(0.05),
-
+                color: Colors.black.withOpacity(0.05),
                 blurRadius: 10,
-
                 offset: const Offset(0, 4),
               ),
             ],
           ),
 
-          child: StreamBuilder<QuerySnapshot>(
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment:
+              CrossAxisAlignment.start,
 
-            stream: alertsRef
-                .where(
-              "status",
-              isEqualTo: "pending",
-            )
-                .orderBy(
-              "createdAt",
-              descending: true,
-            )
-                .snapshots(),
+              children: [
 
-            builder: (context, snapshot) {
+                // =========================================================
+                // PENDING DUPLICATES TABLE
+                // =========================================================
 
-              // 🔷 ERROR
-              if (snapshot.hasError) {
+                StreamBuilder<QuerySnapshot>(
+                  stream: pendingAlertsRef
+                      .where(
+                    "status",
+                    isEqualTo: "pending",
+                  )
+                      .orderBy(
+                    "createdAt",
+                    descending: true,
+                  )
+                      .snapshots(),
 
-                return Center(
-                  child: Text(
-                    "Error: ${snapshot.error}",
-                  ),
-                );
-              }
+                  builder: (context, snapshot) {
 
-              // 🔷 LOADING
-              if (snapshot.connectionState ==
-                  ConnectionState.waiting) {
-
-                return const Center(
-                  child:
-                  CircularProgressIndicator(),
-                );
-              }
-
-              final docs =
-                  snapshot.data?.docs ?? [];
-
-              // 🔷 EMPTY
-              if (docs.isEmpty) {
-
-                return const Center(
-                  child: Padding(
-                    padding: EdgeInsets.all(40),
-
-                    child: Text(
-                      "No duplicate alerts found",
-
-                      style: TextStyle(
-                        fontSize: 16,
-                      ),
-                    ),
-                  ),
-                );
-              }
-
-              return Column(
-                crossAxisAlignment:
-                CrossAxisAlignment.start,
-
-                children: [
-
-                  // 🔷 HEADER
-                  Row(
-                    mainAxisAlignment:
-                    MainAxisAlignment
-                        .spaceBetween,
-
-                    children: [
-
-                      const Text(
-                        "Potential Duplicate Items",
-
-                        style: TextStyle(
-                          fontSize: 22,
-                          fontWeight:
-                          FontWeight.bold,
-                        ),
-                      ),
-
-                      Container(
-                        padding:
-                        const EdgeInsets
-                            .symmetric(
-                          horizontal: 16,
-                          vertical: 10,
-                        ),
-
-                        decoration: BoxDecoration(
-                          color: Colors.red
-                              .withOpacity(0.1),
-
-                          borderRadius:
-                          BorderRadius
-                              .circular(12),
-                        ),
-
+                    if (snapshot.hasError) {
+                      return Center(
                         child: Text(
-                          "${docs.length} Pending",
-
-                          style:
-                          const TextStyle(
-                            color: Colors.red,
-                            fontWeight:
-                            FontWeight.bold,
-                          ),
+                          "Error: ${snapshot.error}",
                         ),
-                      ),
-                    ],
-                  ),
+                      );
+                    }
 
-                  const SizedBox(height: 25),
+                    if (snapshot.connectionState ==
+                        ConnectionState.waiting) {
+                      return const Center(
+                        child:
+                        CircularProgressIndicator(),
+                      );
+                    }
 
-                  // ✅ FIXED TABLE
-                  SizedBox(
-                    height: 500,
+                    final docs =
+                        snapshot.data?.docs ?? [];
 
-                    child:
-                    SingleChildScrollView(
-                      scrollDirection:
-                      Axis.horizontal,
+                    return Column(
+                      crossAxisAlignment:
+                      CrossAxisAlignment.start,
 
-                      child: DataTable(
+                      children: [
 
-                        columnSpacing: 50,
+                        // HEADER
+                        Row(
+                          mainAxisAlignment:
+                          MainAxisAlignment
+                              .spaceBetween,
 
-                        headingRowHeight: 60,
+                          children: [
 
-                        dataRowMinHeight: 90,
+                            const Text(
+                              "Potential Duplicate Items",
 
-                        dataRowMaxHeight: 100,
+                              style: TextStyle(
+                                fontSize: 22,
+                                fontWeight:
+                                FontWeight.bold,
+                              ),
+                            ),
 
-                        headingRowColor:
-                        MaterialStateProperty
-                            .all(bgColor),
+                            Container(
+                              padding:
+                              const EdgeInsets
+                                  .symmetric(
+                                horizontal: 16,
+                                vertical: 10,
+                              ),
 
-                        border: TableBorder(
-                          horizontalInside:
-                          BorderSide(
-                            color: Colors.grey
-                                .withOpacity(
-                                0.2),
-                          ),
+                              decoration:
+                              BoxDecoration(
+                                color: Colors.red
+                                    .withOpacity(
+                                    0.1),
+
+                                borderRadius:
+                                BorderRadius
+                                    .circular(
+                                    12),
+                              ),
+
+                              child: Text(
+                                "${docs.length} Pending",
+
+                                style:
+                                const TextStyle(
+                                  color:
+                                  Colors.red,
+
+                                  fontWeight:
+                                  FontWeight
+                                      .bold,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
 
-                        columns: const [
+                        const SizedBox(height: 25),
 
-                          // 🔷 ITEM
-                          DataColumn(
-                            label: Text(
-                              "Item Name",
-
-                              style: TextStyle(
-                                fontWeight:
-                                FontWeight
-                                    .bold,
+                        if (docs.isEmpty)
+                          const Center(
+                            child: Padding(
+                              padding:
+                              EdgeInsets.all(20),
+                              child: Text(
+                                "No pending duplicate alerts found",
+                                style: TextStyle(
+                                  fontSize: 16,
+                                ),
                               ),
                             ),
-                          ),
+                          )
+                        else
+                          SingleChildScrollView(
+                            scrollDirection:
+                            Axis.horizontal,
 
-                          // 🔷 SIMILARITY
-                          DataColumn(
-                            label: Text(
-                              "Similarity",
+                            child: DataTable(
 
-                              style: TextStyle(
-                                fontWeight:
-                                FontWeight
-                                    .bold,
+                              columnSpacing: 50,
+
+                              headingRowHeight: 60,
+                              dataRowMinHeight: 90,
+                              dataRowMaxHeight: 100,
+
+                              headingRowColor:
+                              MaterialStateProperty
+                                  .all(
+                                bgColor,
                               ),
-                            ),
-                          ),
 
-                          // 🔷 DATE
-                          DataColumn(
-                            label: Text(
-                              "Detected On",
-
-                              style: TextStyle(
-                                fontWeight:
-                                FontWeight
-                                    .bold,
-                              ),
-                            ),
-                          ),
-
-                          // 🔷 ACTIONS
-                          DataColumn(
-                            label: Text(
-                              "Actions",
-
-                              style: TextStyle(
-                                fontWeight:
-                                FontWeight
-                                    .bold,
-                              ),
-                            ),
-                          ),
-                        ],
-
-                        rows:
-                        docs.map((doc) {
-
-                          final data =
-                          doc.data()
-                          as Map<String,
-                              dynamic>;
-
-                          final similarity =
-                          ((data[
-                          "similarity"] ??
-                              0.0) *
-                              100)
-                              .toStringAsFixed(
-                              0);
-
-                          final timestamp =
-                          data["createdAt"]
-                          as Timestamp?;
-
-                          final date =
-                          timestamp != null
-                              ? "${timestamp.toDate().day}/${timestamp.toDate().month}/${timestamp.toDate().year}"
-                              : "N/A";
-
-                          return DataRow(
-                            cells: [
-
-                              // 🔷 ITEM CELL
-                              DataCell(
-                                SizedBox(
-                                  width: 320,
-
-                                  child: Row(
-                                    children: [
-
-                                      // IMAGE
-                                      Container(
-                                        width: 50,
-                                        height: 50,
-
-                                        decoration:
-                                        BoxDecoration(
-                                          borderRadius:
-                                          BorderRadius
-                                              .circular(
-                                              10),
-
-                                          image: data[
-                                          "duplicateImageUrl"] !=
-                                              null
-                                              ? DecorationImage(
-                                            image:
-                                            NetworkImage(
-                                              data[
-                                              "duplicateImageUrl"],
-                                            ),
-
-                                            fit: BoxFit
-                                                .cover,
-                                          )
-                                              : null,
-
-                                          color: Colors
-                                              .black12,
-                                        ),
-
-                                        child: data[
-                                        "duplicateImageUrl"] ==
-                                            null
-                                            ? const Icon(
-                                          Icons
-                                              .inventory_2,
-                                        )
-                                            : null,
-                                      ),
-
-                                      const SizedBox(
-                                          width:
-                                          14),
-
-                                      // NAME
-                                      Expanded(
-                                        child: Text(
-                                          data["itemName"] ??
-                                              "Unknown Item",
-
-                                          overflow:
-                                          TextOverflow
-                                              .ellipsis,
-
-                                          style:
-                                          const TextStyle(
-                                            fontWeight:
-                                            FontWeight
-                                                .bold,
-
-                                            fontSize:
-                                            15,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
+                              border: TableBorder(
+                                horizontalInside:
+                                BorderSide(
+                                  color: Colors.grey
+                                      .withOpacity(
+                                      0.2),
                                 ),
                               ),
 
-                              // 🔷 SIMILARITY
-                              DataCell(
-                                Container(
-                                  padding:
-                                  const EdgeInsets
-                                      .symmetric(
-                                    horizontal:
-                                    16,
-                                    vertical: 8,
-                                  ),
+                              columns: const [
 
-                                  decoration:
-                                  BoxDecoration(
-                                    color: Colors
-                                        .red
-                                        .withOpacity(
-                                        0.12),
+                                DataColumn(
+                                  label: Text(
+                                    "Item Name",
 
-                                    borderRadius:
-                                    BorderRadius
-                                        .circular(
-                                        20),
-                                  ),
-
-                                  child: Text(
-                                    "$similarity%",
-
-                                    style:
-                                    const TextStyle(
-                                      color:
-                                      Colors.red,
-
+                                    style: TextStyle(
                                       fontWeight:
                                       FontWeight
                                           .bold,
                                     ),
                                   ),
                                 ),
+
+                                DataColumn(
+                                  label: Text(
+                                    "Similarity",
+
+                                    style: TextStyle(
+                                      fontWeight:
+                                      FontWeight
+                                          .bold,
+                                    ),
+                                  ),
+                                ),
+
+                                DataColumn(
+                                  label: Text(
+                                    "Detected On",
+
+                                    style: TextStyle(
+                                      fontWeight:
+                                      FontWeight
+                                          .bold,
+                                    ),
+                                  ),
+                                ),
+
+                                DataColumn(
+                                  label: Text(
+                                    "Actions",
+
+                                    style: TextStyle(
+                                      fontWeight:
+                                      FontWeight
+                                          .bold,
+                                    ),
+                                  ),
+                                ),
+                              ],
+
+                              rows: docs.map((doc) {
+
+                                final data =
+                                doc.data()
+                                as Map<String,
+                                    dynamic>;
+
+                                final similarity =
+                                ((data["similarity"] ??
+                                    0.0) *
+                                    100)
+                                    .toStringAsFixed(
+                                    0);
+
+                                final timestamp =
+                                data["createdAt"]
+                                as Timestamp?;
+
+                                final date =
+                                timestamp != null
+                                    ? "${timestamp.toDate().day}/${timestamp.toDate().month}/${timestamp.toDate().year}"
+                                    : "N/A";
+
+                                return DataRow(
+                                  cells: [
+
+                                    // ITEM
+                                    DataCell(
+                                      SizedBox(
+                                        width: 300,
+
+                                        child: Row(
+                                          children: [
+
+                                            Container(
+                                              width: 45,
+                                              height:
+                                              45,
+
+                                              decoration:
+                                              BoxDecoration(
+                                                borderRadius:
+                                                BorderRadius.circular(
+                                                    10),
+
+                                                image: data['duplicateImageUrl'] !=
+                                                    null
+                                                    ? DecorationImage(
+                                                  image:
+                                                  NetworkImage(
+                                                    data['duplicateImageUrl'],
+                                                  ),
+                                                  fit: BoxFit.cover,
+                                                )
+                                                    : null,
+
+                                                color: Colors.black12,
+                                              ),
+
+                                              child: data['duplicateImageUrl'] ==
+                                                  null
+                                                  ? const Icon(
+                                                Icons.inventory_2,
+                                              )
+                                                  : null,
+                                            ),
+
+                                            const SizedBox(
+                                                width:
+                                                14),
+
+                                            Expanded(
+                                              child:
+                                              Column(
+                                                mainAxisAlignment:
+                                                MainAxisAlignment.center,
+
+                                                crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+
+                                                children: [
+
+                                                  Text(
+                                                    data["itemName"] ??
+                                                        "Unknown Item",
+
+                                                    overflow:
+                                                    TextOverflow.ellipsis,
+
+                                                    style:
+                                                    const TextStyle(
+                                                      fontWeight:
+                                                      FontWeight.bold,
+
+                                                      fontSize:
+                                                      15,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+
+                                    // SIMILARITY
+                                    DataCell(
+                                      Container(
+                                        padding:
+                                        const EdgeInsets
+                                            .symmetric(
+                                          horizontal:
+                                          16,
+                                          vertical: 8,
+                                        ),
+
+                                        decoration:
+                                        BoxDecoration(
+                                          color: Colors
+                                              .red
+                                              .withOpacity(
+                                              0.12),
+
+                                          borderRadius:
+                                          BorderRadius
+                                              .circular(
+                                              20),
+                                        ),
+
+                                        child: Text(
+                                          "$similarity%",
+
+                                          style:
+                                          const TextStyle(
+                                            color:
+                                            Colors.red,
+
+                                            fontWeight:
+                                            FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+
+                                    // DATE
+                                    DataCell(
+                                      Text(
+                                        date,
+
+                                        style:
+                                        const TextStyle(
+                                          fontWeight:
+                                          FontWeight.w500,
+                                        ),
+                                      ),
+                                    ),
+
+                                    // ACTIONS
+                                    DataCell(
+                                      Container(
+                                        decoration:
+                                        BoxDecoration(
+                                          borderRadius:
+                                          BorderRadius
+                                              .circular(
+                                              12),
+                                        ),
+
+                                        child:
+                                        IconButton(
+                                          tooltip:
+                                          "View Details",
+
+                                          icon:
+                                          const Icon(
+                                            Icons
+                                                .visibility,
+
+                                            color:
+                                            darkBlue,
+                                          ),
+
+                                          onPressed:
+                                              () {
+
+                                            _openDetails(
+                                              context,
+                                              doc.id,
+                                              data,
+                                            );
+                                          },
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                );
+                              }).toList(),
+                            ),
+                          ),
+                      ],
+                    );
+                  },
+                ),
+
+                const SizedBox(height: 50),
+
+                // =========================================================
+                // CONFIRMED DUPLICATES TABLE
+                // =========================================================
+
+                StreamBuilder<QuerySnapshot>(
+                  stream: confirmedAlertsRef
+                      .where(
+                    "status",
+                    isEqualTo: "confirmed",
+                  )
+                      .orderBy(
+                    "createdAt",
+                    descending: true,
+                  )
+                      .snapshots(),
+
+                  builder: (context, snapshot) {
+
+                    if (snapshot.hasError) {
+                      return Center(
+                        child: Text(
+                          "Error: ${snapshot.error}",
+                        ),
+                      );
+                    }
+
+                    if (snapshot.connectionState ==
+                        ConnectionState.waiting) {
+                      return const Center(
+                        child:
+                        CircularProgressIndicator(),
+                      );
+                    }
+
+                    final docs =
+                        snapshot.data?.docs ?? [];
+
+                    return Column(
+                      crossAxisAlignment:
+                      CrossAxisAlignment.start,
+
+                      children: [
+
+                        Row(
+                          mainAxisAlignment:
+                          MainAxisAlignment
+                              .spaceBetween,
+
+                          children: [
+
+                            const Text(
+                              "Confirmed Duplicate Items",
+
+                              style: TextStyle(
+                                fontSize: 22,
+                                fontWeight:
+                                FontWeight.bold,
+                              ),
+                            ),
+
+                            Container(
+                              padding:
+                              const EdgeInsets
+                                  .symmetric(
+                                horizontal: 16,
+                                vertical: 10,
                               ),
 
-                              // 🔷 DATE
-                              DataCell(
-                                Text(
-                                  date,
+                              decoration:
+                              BoxDecoration(
+                                color: Colors.green
+                                    .withOpacity(
+                                    0.1),
 
-                                  style:
-                                  const TextStyle(
-                                    fontWeight:
-                                    FontWeight
-                                        .w500,
-                                  ),
+                                borderRadius:
+                                BorderRadius
+                                    .circular(
+                                    12),
+                              ),
+
+                              child: Text(
+                                "${docs.length} Confirmed",
+
+                                style:
+                                const TextStyle(
+                                  color:
+                                  Colors.green,
+
+                                  fontWeight:
+                                  FontWeight
+                                      .bold,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+
+                        const SizedBox(height: 25),
+
+                        if (docs.isEmpty)
+                          const Center(
+                            child: Padding(
+                              padding:
+                              EdgeInsets.all(20),
+                              child: Text(
+                                "No confirmed duplicate alerts found",
+                                style: TextStyle(
+                                  fontSize: 16,
+                                ),
+                              ),
+                            ),
+                          )
+                        else
+                          SingleChildScrollView(
+                            scrollDirection:
+                            Axis.horizontal,
+
+                            child: DataTable(
+
+                              columnSpacing: 50,
+
+                              headingRowHeight: 60,
+                              dataRowMinHeight: 90,
+                              dataRowMaxHeight: 100,
+
+                              headingRowColor:
+                              MaterialStateProperty.all(
+                                bgColor,
+                              ),
+
+                              border: TableBorder(
+                                horizontalInside:
+                                BorderSide(
+                                  color: Colors.grey
+                                      .withOpacity(0.2),
                                 ),
                               ),
 
-                              // 🔷 ACTIONS
-                              DataCell(
+                              columns: const [
 
-                                IconButton(
-                                  tooltip:
-                                  "View Details",
+                                // ITEM NAME
+                                DataColumn(
+                                  label: Text(
+                                    "Item Name",
 
-                                  icon:
-                                  const Icon(
-                                    Icons
-                                        .visibility,
-
-                                    color:
-                                    Colors.blue,
+                                    style: TextStyle(
+                                      fontWeight:
+                                      FontWeight.bold,
+                                    ),
                                   ),
-
-                                  onPressed: () {
-
-                                    _openDetails(
-                                      context,
-                                      doc.id,
-                                      data,
-                                    );
-                                  },
                                 ),
-                              ),
-                            ],
-                          );
-                        }).toList(),
-                      ),
-                    ),
-                  ),
-                ],
-              );
-            },
+
+                                // SIMILARITY
+                                DataColumn(
+                                  label: Text(
+                                    "Similarity",
+
+                                    style: TextStyle(
+                                      fontWeight:
+                                      FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+
+                                // DATE
+                                DataColumn(
+                                  label: Text(
+                                    "Detected On",
+
+                                    style: TextStyle(
+                                      fontWeight:
+                                      FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+
+                                // ACTIONS
+                                DataColumn(
+                                  label: Text(
+                                    "Actions",
+
+                                    style: TextStyle(
+                                      fontWeight:
+                                      FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ],
+
+                              rows: docs.map((doc) {
+
+                                final data =
+                                doc.data()
+                                as Map<String, dynamic>;
+
+                                final similarityValue =
+                                ((data["similarity"] ?? 0.0) * 100);
+
+                                final similarity =
+                                similarityValue.toStringAsFixed(0);
+
+                                final timestamp =
+                                data["createdAt"]
+                                as Timestamp?;
+
+                                final date =
+                                timestamp != null
+                                    ? "${timestamp.toDate().day}/${timestamp.toDate().month}/${timestamp.toDate().year}"
+                                    : "N/A";
+
+                                final bool isPerfectMatch =
+                                    similarityValue >= 100;
+
+                                return DataRow(
+                                  cells: [
+
+                                    // =====================================================
+                                    // ITEM WITH IMAGE
+                                    // =====================================================
+
+                                    DataCell(
+                                      SizedBox(
+                                        width: 300,
+
+                                        child: Row(
+                                          children: [
+
+                                            Container(
+                                              width: 45,
+                                              height: 45,
+
+                                              decoration: BoxDecoration(
+                                                borderRadius:
+                                                BorderRadius.circular(10),
+
+                                                image:
+                                                data['duplicateImageUrl'] !=
+                                                    null
+                                                    ? DecorationImage(
+                                                  image: NetworkImage(
+                                                    data['duplicateImageUrl'],
+                                                  ),
+
+                                                  fit: BoxFit.cover,
+                                                )
+                                                    : null,
+
+                                                color: Colors.black12,
+                                              ),
+
+                                              child:
+                                              data['duplicateImageUrl'] ==
+                                                  null
+                                                  ? const Icon(
+                                                Icons.inventory_2,
+                                              )
+                                                  : null,
+                                            ),
+
+                                            const SizedBox(width: 14),
+
+                                            Expanded(
+                                              child: Text(
+                                                data["itemName"] ??
+                                                    "Unknown Item",
+
+                                                overflow:
+                                                TextOverflow.ellipsis,
+
+                                                style: const TextStyle(
+                                                  fontWeight:
+                                                  FontWeight.bold,
+
+                                                  fontSize: 15,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+
+                                    // =====================================================
+                                    // SIMILARITY
+                                    // =====================================================
+
+                                    DataCell(
+                                      Container(
+                                        padding:
+                                        const EdgeInsets.symmetric(
+                                          horizontal: 16,
+                                          vertical: 8,
+                                        ),
+
+                                        decoration: BoxDecoration(
+
+                                          color: isPerfectMatch
+                                              ? Colors.red.withOpacity(0.12)
+                                              : orange.withOpacity(0.12),
+
+                                          borderRadius:
+                                          BorderRadius.circular(20),
+                                        ),
+
+                                        child: Text(
+                                          "$similarity%",
+
+                                          style: TextStyle(
+                                            color: isPerfectMatch
+                                                ? Colors.red
+                                                : orange,
+
+                                            fontWeight:
+                                            FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+
+                                    // =====================================================
+                                    // DATE
+                                    // =====================================================
+
+                                    DataCell(
+                                      Text(
+                                        date,
+
+                                        style: const TextStyle(
+                                          fontWeight:
+                                          FontWeight.w500,
+                                        ),
+                                      ),
+                                    ),
+
+                                    // =====================================================
+                                    // ACTION BUTTON
+                                    // =====================================================
+
+                                    DataCell(
+                                      IconButton(
+                                        tooltip: "View Details",
+
+                                        icon: const Icon(
+                                          Icons.visibility,
+                                          color: darkBlue,
+                                        ),
+
+                                        onPressed: () {
+
+                                          showModalBottomSheet(
+                                            context: context,
+                                            isScrollControlled: true,
+                                            backgroundColor: Colors.transparent,
+
+                                            builder: (_) {
+
+                                              return DraggableScrollableSheet(
+
+                                                initialChildSize: 0.92,
+                                                minChildSize: 0.6,
+                                                maxChildSize: 0.95,
+
+                                                builder: (
+                                                    context,
+                                                    scrollController,
+                                                    ) {
+
+                                                  return Container(
+
+                                                    decoration: const BoxDecoration(
+                                                      color: bgColor,
+
+                                                      borderRadius: BorderRadius.vertical(
+                                                        top: Radius.circular(24),
+                                                      ),
+                                                    ),
+
+                                                    child: FutureBuilder<DocumentSnapshot>(
+
+                                                      future: FirebaseFirestore.instance
+                                                          .collection("items")
+                                                          .doc(data["duplicateItemId"])
+                                                          .get(),
+
+                                                      builder: (context, snapshot) {
+
+                                                        if (!snapshot.hasData) {
+                                                          return const Center(
+                                                            child: CircularProgressIndicator(),
+                                                          );
+                                                        }
+
+                                                        final duplicate =
+                                                            snapshot.data!.data()
+                                                            as Map<String, dynamic>? ?? {};
+
+                                                        return Column(
+                                                          children: [
+
+                                                            // ================= HEADER =================
+                                                            Container(
+                                                              padding: const EdgeInsets.symmetric(
+                                                                horizontal: 16,
+                                                                vertical: 8,
+                                                              ),
+
+                                                              decoration: const BoxDecoration(
+                                                                color: bgColor,
+                                                                borderRadius: BorderRadius.vertical(
+                                                                  top: Radius.circular(24),
+                                                                ),
+                                                              ),
+
+                                                              child: Row(
+                                                                mainAxisAlignment:
+                                                                MainAxisAlignment.end,
+
+                                                                children: [
+
+                                                                  IconButton(
+                                                                    icon: const Icon(Icons.close),
+
+                                                                    onPressed: () =>
+                                                                        Navigator.pop(context),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            ),
+
+                                                            // ================= CONTENT =================
+                                                            Expanded(
+                                                              child: SingleChildScrollView(
+                                                                controller: scrollController,
+                                                                padding: const EdgeInsets.all(20),
+
+                                                                child: _itemCard(
+                                                                  "Duplicate Item",
+                                                                  duplicate,
+                                                                  Colors.blue,
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        );
+                                                      },
+                                                    ),
+                                                  );
+                                                },
+                                              );
+                                            },
+                                          );
+                                        },
+                                      ),
+                                    ),
+                                  ],
+                                );
+                              }).toList(),
+                            ),
+                          ),
+                      ],
+                    );
+                  },
+                ),
+              ],
+            ),
           ),
         ),
       ),
     );
   }
 
-  // 🔷 OPEN DETAILS
   void _openDetails(
       BuildContext context,
       String alertId,
@@ -4316,38 +5761,34 @@ class DuplicateAlertsScreen extends StatelessWidget {
       ) {
 
     showModalBottomSheet(
-
       context: context,
-
       isScrollControlled: true,
-
       backgroundColor: Colors.transparent,
 
       builder: (_) {
 
         return DraggableScrollableSheet(
-
           initialChildSize: 0.92,
-
           minChildSize: 0.6,
-
           maxChildSize: 0.95,
 
-          builder: (context, scrollController) {
+          builder: (
+              context,
+              scrollController,
+              ) {
 
             return Container(
-
               decoration: const BoxDecoration(
                 color: bgColor,
 
-                borderRadius: BorderRadius.vertical(
+                borderRadius:
+                BorderRadius.vertical(
                   top: Radius.circular(24),
                 ),
               ),
 
               child: FutureBuilder<
                   List<DocumentSnapshot>>(
-
                 future: Future.wait([
 
                   FirebaseFirestore.instance
@@ -4357,38 +5798,17 @@ class DuplicateAlertsScreen extends StatelessWidget {
 
                   FirebaseFirestore.instance
                       .collection("items")
-                      .doc(data["duplicateItemId"])
+                      .doc(
+                      data["duplicateItemId"])
                       .get(),
                 ]),
 
                 builder: (context, snapshot) {
 
-                  // 🔷 LOADING
-                  if (snapshot.connectionState ==
-                      ConnectionState.waiting) {
-
+                  if (!snapshot.hasData) {
                     return const Center(
                       child:
                       CircularProgressIndicator(),
-                    );
-                  }
-
-                  // 🔷 ERROR
-                  if (snapshot.hasError) {
-
-                    return Center(
-                      child: Text(
-                        "Error: ${snapshot.error}",
-                      ),
-                    );
-                  }
-
-                  if (!snapshot.hasData) {
-
-                    return const Center(
-                      child: Text(
-                        "No data found",
-                      ),
                     );
                   }
 
@@ -4396,18 +5816,19 @@ class DuplicateAlertsScreen extends StatelessWidget {
 
                   final original =
                       docs[0].data()
-                      as Map<String, dynamic>? ??
+                      as Map<String,
+                          dynamic>? ??
                           {};
 
                   final duplicate =
                       docs[1].data()
-                      as Map<String, dynamic>? ??
+                      as Map<String,
+                          dynamic>? ??
                           {};
 
                   return Column(
                     children: [
 
-                      // 🔷 HEADER
                       Container(
                         padding:
                         const EdgeInsets.all(20),
@@ -4418,8 +5839,8 @@ class DuplicateAlertsScreen extends StatelessWidget {
 
                           borderRadius:
                           BorderRadius.vertical(
-                            top:
-                            Radius.circular(24),
+                            top: Radius.circular(
+                                24),
                           ),
                         ),
 
@@ -4441,24 +5862,27 @@ class DuplicateAlertsScreen extends StatelessWidget {
                             ),
 
                             IconButton(
-                              icon:
-                              const Icon(Icons.close),
+                              icon: const Icon(
+                                Icons.close,
+                              ),
 
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
+                              onPressed: () =>
+                                  Navigator.pop(
+                                      context),
                             ),
                           ],
                         ),
                       ),
 
-                      // 🔷 CONTENT
                       Expanded(
-                        child: SingleChildScrollView(
-                          controller: scrollController,
+                        child:
+                        SingleChildScrollView(
+                          controller:
+                          scrollController,
 
                           padding:
-                          const EdgeInsets.all(20),
+                          const EdgeInsets.all(
+                              20),
 
                           child: Column(
                             children: [
@@ -4470,7 +5894,6 @@ class DuplicateAlertsScreen extends StatelessWidget {
 
                                 children: [
 
-                                  // 🔷 ORIGINAL ITEM
                                   Expanded(
                                     child: _itemCard(
                                       "Original Item",
@@ -4482,128 +5905,11 @@ class DuplicateAlertsScreen extends StatelessWidget {
                                   const SizedBox(
                                       width: 20),
 
-                                  // 🔷 DUPLICATE ITEM
                                   Expanded(
                                     child: _itemCard(
                                       "Duplicate Item",
                                       duplicate,
                                       Colors.blue,
-                                    ),
-                                  ),
-                                ],
-                              ),
-
-                              const SizedBox(
-                                  height: 30),
-
-                              // 🔷 ACTION BUTTONS
-                              Row(
-                                mainAxisAlignment:
-                                MainAxisAlignment.end,
-
-                                children: [
-
-                                  // ✅ CONFIRM
-                                  ElevatedButton.icon(
-
-                                    onPressed: () async {
-
-                                      await FirebaseFirestore
-                                          .instance
-                                          .collection(
-                                          "duplicate_alerts")
-                                          .doc(alertId)
-                                          .update({
-                                        "status":
-                                        "confirmed",
-                                      });
-
-                                      Navigator.pop(
-                                          context);
-                                    },
-
-                                    icon: const Icon(
-                                        Icons.check),
-
-                                    label:
-                                    const Text("Confirm"),
-
-                                    style:
-                                    ElevatedButton
-                                        .styleFrom(
-
-                                      backgroundColor:
-                                      Colors.green,
-
-                                      foregroundColor:
-                                      Colors.white,
-
-                                      padding:
-                                      const EdgeInsets
-                                          .symmetric(
-                                        horizontal: 22,
-                                        vertical: 16,
-                                      ),
-
-                                      shape:
-                                      RoundedRectangleBorder(
-                                        borderRadius:
-                                        BorderRadius
-                                            .circular(
-                                            12),
-                                      ),
-                                    ),
-                                  ),
-
-                                  const SizedBox(
-                                      width: 12),
-
-                                  // ❌ IGNORE
-                                  ElevatedButton.icon(
-
-                                    onPressed: () async {
-
-                                      await FirebaseFirestore
-                                          .instance
-                                          .collection(
-                                          "duplicate_alerts")
-                                          .doc(alertId)
-                                          .delete();
-
-                                      Navigator.pop(
-                                          context);
-                                    },
-
-                                    icon: const Icon(
-                                        Icons.close),
-
-                                    label:
-                                    const Text("Ignore"),
-
-                                    style:
-                                    ElevatedButton
-                                        .styleFrom(
-
-                                      backgroundColor:
-                                      Colors.grey,
-
-                                      foregroundColor:
-                                      Colors.white,
-
-                                      padding:
-                                      const EdgeInsets
-                                          .symmetric(
-                                        horizontal: 22,
-                                        vertical: 16,
-                                      ),
-
-                                      shape:
-                                      RoundedRectangleBorder(
-                                        borderRadius:
-                                        BorderRadius
-                                            .circular(
-                                            12),
-                                      ),
                                     ),
                                   ),
                                 ],
@@ -4623,7 +5929,6 @@ class DuplicateAlertsScreen extends StatelessWidget {
     );
   }
 
-  // 🔷 ITEM CARD
   Widget _itemCard(
       String title,
       Map<String, dynamic> item,
@@ -4640,10 +5945,10 @@ class DuplicateAlertsScreen extends StatelessWidget {
         BorderRadius.circular(18),
 
         boxShadow: [
+
           BoxShadow(
             color:
             Colors.black.withOpacity(0.05),
-
             blurRadius: 8,
           ),
         ],
@@ -4655,7 +5960,6 @@ class DuplicateAlertsScreen extends StatelessWidget {
 
         children: [
 
-          // 🔷 TITLE
           Container(
             padding:
             const EdgeInsets.symmetric(
@@ -4697,7 +6001,6 @@ class DuplicateAlertsScreen extends StatelessWidget {
 
           const SizedBox(height: 18),
 
-          // 🔷 IMAGE
           if (item["imageUrl"] != null)
             ClipRRect(
               borderRadius:
@@ -4709,26 +6012,23 @@ class DuplicateAlertsScreen extends StatelessWidget {
                 height: 220,
                 width: double.infinity,
 
-                fit: BoxFit.cover,
+                fit: BoxFit.fill,
               ),
             ),
 
           const SizedBox(height: 18),
 
-          // 🔷 NAME
           Text(
             item["itemName"] ?? "N/A",
 
             style: const TextStyle(
               fontSize: 20,
-              fontWeight:
-              FontWeight.bold,
+              fontWeight: FontWeight.bold,
             ),
           ),
 
           const SizedBox(height: 10),
 
-          // 🔷 DESCRIPTION
           Text(
             item["description"] ??
                 "No description",
@@ -4741,7 +6041,6 @@ class DuplicateAlertsScreen extends StatelessWidget {
 
           const SizedBox(height: 14),
 
-          // 🔷 LOCATION
           Row(
             children: [
 

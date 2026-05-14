@@ -202,7 +202,10 @@
 
 
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+
+import '../ui/screens/loginscreen.dart';
 
 class Sidebar extends StatelessWidget {
   final int selectedIndex;
@@ -239,10 +242,12 @@ class Sidebar extends StatelessWidget {
             child: const Column(
               children: [
 
+
                 Icon(
-                  Icons.admin_panel_settings,
+                  Icons.search,
                   color: orange,
-                  size: 50,
+                  size: 38,
+
                 ),
 
                 SizedBox(height: 10),
@@ -300,30 +305,30 @@ class Sidebar extends StatelessWidget {
                     onTap: () => onItemSelected(2),
                   ),
 
-                  SidebarItem(
-                    icon: Icons.assignment_turned_in,
-                    title: "Claims",
-                    isSelected: selectedIndex == 3,
-                    onTap: () => onItemSelected(3),
-                  ),
+                  // SidebarItem(
+                  //   icon: Icons.assignment_turned_in,
+                  //   title: "Claims",
+                  //   isSelected: selectedIndex == 3,
+                  //   onTap: () => onItemSelected(3),
+                  // ),
 
                   SidebarItem(
                     icon: Icons.analytics,
                     title: "Analytics",
-                    isSelected: selectedIndex == 4,
-                    onTap: () => onItemSelected(4),
+                    isSelected: selectedIndex == 3,
+                    onTap: () => onItemSelected(3),
                   ),
                   SidebarItem(
                     icon: Icons.auto_awesome,
                     title: "AI Matches",
-                    isSelected: selectedIndex == 5,
-                    onTap: () => onItemSelected(5),
+                    isSelected: selectedIndex == 4,
+                    onTap: () => onItemSelected(4),
                   ),
                   SidebarItem(
                     icon: Icons.campaign,
                     title: "Broadcast",
-                    isSelected: selectedIndex == 6,
-                    onTap: () => onItemSelected(6),
+                    isSelected: selectedIndex == 5,
+                    onTap: () => onItemSelected(5),
                   ),
                 ],
               ),
@@ -342,9 +347,16 @@ class Sidebar extends StatelessWidget {
             isSelected: false,
 
             // ✅ FIXED
-            onTap: () {
-              // You can later connect FirebaseAuth signOut here
-              print("Logout clicked");
+            onTap: () async {
+              await FirebaseAuth.instance.signOut();
+
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(
+                  builder: (context) =>  LoginScreen(),
+                ),
+                    (route) => false,
+              );
             },
           ),
 

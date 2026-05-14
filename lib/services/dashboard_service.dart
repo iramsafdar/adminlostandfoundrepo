@@ -19,7 +19,7 @@ class DashboardService {
 
   // 🔷 CLAIMS COUNT
   Stream<int> getClaimsCount() {
-    return _firestore.collection('claim').snapshots().map(
+    return _firestore.collection('claims').snapshots().map(
           (snapshot) => snapshot.docs.length,
     );
   }
@@ -50,11 +50,11 @@ class DashboardService {
 
   // 🔷 PENDING CLAIMS
   Stream<int> getPendingClaimsCount() {
-    return _firestore.collection('claim').snapshots().map(
+    return _firestore.collection('claims').snapshots().map(
           (snapshot) {
         return snapshot.docs.where((doc) {
           final data = doc.data() as Map<String, dynamic>;
-          return data['status'] == 'pending';
+          return data['status'] == 'claim pending';
         }).length;
       },
     );
